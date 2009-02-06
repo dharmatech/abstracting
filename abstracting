@@ -1,0 +1,12 @@
+#!/bin/sh
+
+cd /root/abstracting
+
+ypsilon -i src/boot/ypsilon/ypsilon.scm 
+
+# larceny -- src/boot/larceny/larceny.scm
+
+# gsi boot/boot.scm -
+
+# csi boot/boot.scm
+
