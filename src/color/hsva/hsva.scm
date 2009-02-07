@@ -35,6 +35,8 @@
 		     ((value!)      (lambda (new) (set! value      new)))
 		     ((alpha!)      (lambda (new) (set! alpha      new)))
 
+		     ((clone) (hsva hue saturation value alpha))
+
 		     ((rgba) to-rgba)
 
 		     ((raw) (vector hue saturation value alpha))))))
