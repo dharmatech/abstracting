@@ -2,9 +2,9 @@
 
 cd /root/abstracting
 
-ypsilon -i src/boot/ypsilon/ypsilon.scm 
+# ypsilon -i src/boot/ypsilon/ypsilon.scm 
 
-# larceny -- src/boot/larceny/larceny.scm
+cat src/boot/larceny/larceny.scm - | larceny -err5rs
 
 # gsi boot/boot.scm -
 
