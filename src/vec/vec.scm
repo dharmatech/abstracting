@@ -249,10 +249,10 @@
 
 		 ((suffix)
 		  (lambda (elt)
-		    (let ((i (modulo (+ start len) len)))
+		    (let ((i (mod (+ start len) len)))
 		      (seq-set i elt))
 
-		    (set! start (modulo (+ start 1) len))))
+		    (set! start (mod (+ start 1) len))))
 
 		 (else (-> seq msg))
 
