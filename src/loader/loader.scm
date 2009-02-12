@@ -53,8 +53,8 @@
 							    relative-lib-file))
 				       'exists?)))))
 		      (if root
-			  ;; (load (string-append root "/" relative-lib-file))
-                          (load (string-append root "/" relative-lib-file-short))
+			  (load (string-append root "/" relative-lib-file))
+                          ;; (load (string-append root "/" relative-lib-file-short))
 			  #f))))))
 
 	       ))))
