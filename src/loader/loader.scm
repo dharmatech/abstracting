@@ -40,11 +40,12 @@
 			       (substring name (+ i 1) (string-length name))
 			       name))))
 		  
-		  (let ((relative-lib-file (string-append name
-							  "/"
-							  lib-base-name
-							  ".scm")))
-		    
+		  (let ((relative-lib-file
+                         (string-append name "/" lib-base-name ".scm"))
+
+                        (relative-lib-file-short
+                         (string-append name "/" lib-base-name)))
+
 		    (let ((root ((-> roots 'find)
 				 (lambda (root)
 				   (-> (path (string-append root
@@ -52,7 +53,8 @@
 							    relative-lib-file))
 				       'exists?)))))
 		      (if root
-			  (load (string-append root "/" relative-lib-file))
+			  ;; (load (string-append root "/" relative-lib-file))
+                          (load (string-append root "/" relative-lib-file-short))
 			  #f))))))
 
 	       ))))
