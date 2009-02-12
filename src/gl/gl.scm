@@ -3,9 +3,9 @@
 
   ((ypsilon) ((-> loader 'lib) "gl/ypsilon"))
 
-  ;; ((larceny) (load "/scratch/_gl-larceny-b.scm"))
-
   ((larceny) ((-> loader 'lib) "gl/larceny"))
+
+  ((chicken) ((-> loader 'lib) "gl/chicken"))
 
   )
 
