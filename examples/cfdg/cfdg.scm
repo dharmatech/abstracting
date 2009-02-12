@@ -32,19 +32,12 @@
 
   (let ((angle (/ (* angle pi) 180)))
 
-    (let ((bv (make-bytevector (* 8 16)))
-          
-          (v (vector (cos (* 2 angle))      (sin (* 2 angle))  0 0
-                     (sin (* 2 angle)) (neg (cos (* 2 angle))) 0 0
-                     0                 0                       1 0
-                     0                 0                       0 1)))
+    (let ((dv (double-vector (cos (* 2 angle))      (sin (* 2 angle))  0 0
+                             (sin (* 2 angle)) (neg (cos (* 2 angle))) 0 0
+                             0                 0                       1 0
+                             0                 0                       0 1)))
 
-      (let loop ((i 0))
-        (when (< i 16)
-              (bytevector-ieee-double-native-set! bv (* i 8) (vector-ref v i))
-              (loop (+ i 1))))
-
-      (glMultMatrixd bv))))
+      (glMultMatrixd (-> dv 'raw)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
