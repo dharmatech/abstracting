@@ -13,36 +13,14 @@
 
 ((-> loader 'lib) "random-weighted")
 
+((-> loader 'lib) "double-vector")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (get-modelview-matrix)
-  (let ((bytevector
-	 (let ((size-of-GLdouble-in-bytes 8)
-	       (number-of-elements 16))
-	   (make-bytevector
-	    (* number-of-elements size-of-GLdouble-in-bytes)))))
-    (glGetDoublev GL_MODELVIEW_MATRIX bytevector)
-    bytevector))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (double-vector-obj bv)
-
-  (let ((message-handler
-
-	 (lambda (msg)
-
-	   (case msg
-
-	     ((ref)
-	      (lambda (i)
-		(bytevector-ieee-double-native-ref bv (* i 8))))
-
-	     ((raw) bv)
-
-	     ))))
-
-    (vector 'double-vector #f message-handler)))
+  (let ((bv (make-bytevector (* 16 8))))
+    (glGetDoublev GL_MODELVIEW_MATRIX bv)
+    bv))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
