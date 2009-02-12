@@ -230,16 +230,8 @@
 
 		     (set! color (hsva 0 0 0 1))
 
-		     ;; self> gl-color
-
-		     ;; ((-> ((-> color 'rgba)) 'call-on-components)
-		     ;;  (lambda (r g b a)
-		     ;;    (glColor4d (+ 0.0 r) (+ 0.0 g) (+ 0.0 b) (+ 0.0 a))))
-
 		     ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
                       
-		     ;; start-shape> call
-
 		     (start-shape)
 
 		     (glEndList))))
