@@ -46,6 +46,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (neg n) (* -1 n))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (gl-flip angle)
+
+  (let ((angle (/ (* angle pi) 180)))
+
+    (let ((bv (make-bytevector (* 8 16)))
+          
+          (v (vector (cos (* 2 angle))      (sin (* 2 angle))  0 0
+                     (sin (* 2 angle)) (neg (cos (* 2 angle))) 0 0
+                     0                 0                       1 0
+                     0                 0                       0 1)))
+
+      (let loop ((i 0))
+        (when (< i 16)
+              (bytevector-ieee-double-native-set! bv (* i 8) (vector-ref v i))
+              (loop (+ i 1))))
+
+      (glMultMatrixd bv))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-macro (cfdg-model . body-expressions)
 
   `(let (
@@ -125,6 +149,25 @@
                 ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
                 (glutSolidSphere 0.5 32 16)))
 
+             (square
+              (lambda ()
+                ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+                (glBegin GL_POLYGON)
+                (glVertex2d -0.5  0.5)
+                (glVertex2d  0.5  0.5)
+                (glVertex2d  0.5 -0.5)
+                (glVertex2d -0.5 -0.5)
+                (glEnd)))
+
+             (triangle
+              (lambda ()
+                ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+                (glBegin GL_POLYGON)
+                (glVertex2d  0.0  0.577)
+                (glVertex2d  0.5 -0.289)
+                (glVertex2d -0.5 -0.289)
+                (glEnd)))
+
              )
 
          (let (
@@ -136,6 +179,8 @@
                (size (lambda (scale) (glScaled scale scale 1.0)))
 
                (rotate (lambda (angle) (glRotated (+ 0.0 angle) 0.0 0.0 1.0)))
+
+               (flip (lambda (angle) (gl-flip angle)))
                
                (block
                 (lambda (procedure)
