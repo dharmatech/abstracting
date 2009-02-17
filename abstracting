@@ -1,12 +1,44 @@
 #!/bin/sh
 
+######################################################################
+
 cd /root/abstracting
 
-ypsilon -i src/boot/ypsilon/ypsilon.scm 
+######################################################################
 
-# cat src/boot/larceny/larceny.scm - | larceny -err5rs
+scheme=ypsilon
 
-# gsi boot/boot.scm -
+######################################################################
 
-# csi boot/boot.scm
+# abstracting [ --ypsilon | --larceny ]
+
+######################################################################
+
+while [ $# -gt 0 ]
+do
+  case $1
+  in
+    --ypsilon)
+      scheme=ypsilon
+      shift
+    ;;
+
+    --larceny)
+      scheme=larceny
+      shift
+    ;;
+  esac
+done
+
+######################################################################
+
+if   [ $scheme = ypsilon ]
+then
+  cat src/boot/ypsilon/ypsilon.scm - | ypsilon
+elif [ $scheme = larceny ]
+then
+  cat src/boot/larceny/larceny.scm - | larceny -err5rs
+else
+  exit
+fi
 
