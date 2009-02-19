@@ -10,10 +10,6 @@ scheme=ypsilon
 
 ######################################################################
 
-# abstracting [ --ypsilon | --larceny ]
-
-######################################################################
-
 while [ $# -gt 0 ]
 do
   case $1
@@ -27,6 +23,15 @@ do
       scheme=larceny
       shift
     ;;
+
+    --ikarus)
+      scheme=ikarus
+      shift
+    ;;
+
+    --chicken)
+      scheme=chicken
+      shift
   esac
 done
 
@@ -38,6 +43,12 @@ then
 elif [ $scheme = larceny ]
 then
   cat src/boot/larceny/larceny.scm - | larceny -err5rs
+elif [ $scheme = ikarus ]
+then
+  cat src/boot/ikarus/ikarus.scm - | ikarus
+elif [ $scheme = chicken ]
+then
+  csi src/boot/chicken/chicken.scm
 else
   exit
 fi
