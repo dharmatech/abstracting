@@ -1,5 +1,5 @@
 
-(import (srfi srfi-27))
+((-> loader 'lib) "srfi/27")
 
 (define (probabilities weights)
   ((-> weights '/n)
