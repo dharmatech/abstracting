@@ -41,11 +41,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (define (vector-of-floats->bytevector v)
+
+;;   (let ((len (vector-length v)))
+
+;;     (let ((bv (make-bytevector (* len 8))))
+
+;;       (do ((i 0 (+ i 1)))
+;;           ((>= i len))
+;;         (bytevector-ieee-double-native-set! bv (* i 8) (vector-ref v i)))
+
+;;       bv)))
+
+;; (define (gl-flip angle)
+
+;;   (let ((angle (/ (* angle pi) 180.0)))
+
+;;     (glMultMatrixd
+
+;;      (vector-of-floats->bytevector
+
+;;       (vector (cos (* 2.0 angle))      (sin (* 2.0 angle))  0.0 0.0
+;;               (sin (* 2.0 angle)) (neg (cos (* 2.0 angle))) 0.0 0.0
+;;               0.0               0.0                     1.0 0.0
+;;               0.0               0.0                     0.0 1.0)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-macro (cfdg-model . body-expressions)
 
   `(let (
 
-         (color (hsva 0 0 0 1))
+         (color (hsva 0.0 0.0 0.0 1.0))
 
          (color-stack (gro-obj 100))
 
@@ -59,9 +86,9 @@
 
          (adjust
           (lambda (val num)
-            (if (> num 0)
-                (+ val (* (- 1 val) num))
-                (+ val (*      val  num)))))
+            (if (> num 0.0)
+                (+ val (* (- 1.0 val) num))
+                (+ val (*        val  num)))))
 
          (modelview-matrix-stack #f)
 
@@ -112,12 +139,26 @@
                 (let ((ref (-> (double-vector-obj (get-modelview-matrix)) 'ref)))
                   (let ((size (apply max
                                      (map (lambda (i) (abs (ref i))) '(0 1 4 5)))))
-                    (display "iterate?: size is ") (display size) (newline)
+                    ;; (display "iterate?: size is ") (display size) (newline)
                     (> size threshold)))))
+
+             ;; (iterate?
+             ;;  (lambda ()
+             ;;    (let ((ref (-> (double-vector-obj (get-modelview-matrix)) 'ref)))
+             ;;      (let ((size (max (abs (ref 0))
+             ;;                       (abs (ref 1))
+             ;;                       (abs (ref 4))
+             ;;                       (abs (ref 5)))))
+             ;;        (> size threshold)))))
+
+             ;; (circle
+             ;;  (lambda ()
+             ;;    ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+             ;;    (glutSolidSphere 0.5 32 16)))
 
              (circle
               (lambda ()
-                ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+                ((-> ((-> color 'rgba)) 'call-on-components) glColor4d)
                 (glutSolidSphere 0.5 32 16)))
 
              (square
@@ -177,7 +218,7 @@
 
                              ;; set-initial-color
 
-                             (set! color (hsva 0 0 0 1))
+                             (set! color (hsva 0.0 0.0 0.0 1.0))
 
                              ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
                              
@@ -209,7 +250,7 @@
 
                         ;; set-background ...
 
-                        (set! color (hsva 0 0 1 1))
+                        (set! color (hsva 0.0 0.0 1.0 1.0))
 
                         (background)
 
@@ -227,7 +268,22 @@
 
                         (if *display-list-generated*
                             (glCallList display-list)
-                            (build-display-list)))))))
+                            
+                            ;; (build-display-list)))))))
+
+                            ;; (time (build-display-list))
+
+                            ;; (profile (time (build-display-list)))
+
+                            ;; (run-with-profiling*
+                            ;;  (lambda ()
+                            ;;    (time (build-display-list))))
+
+                            (time (build-display-list))
+
+                            
+
+                            ))))))
 
              (glutDisplayFunc display-function))
 
@@ -236,4 +292,3 @@
              ,@body-expressions))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
