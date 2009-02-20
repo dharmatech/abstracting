@@ -11,6 +11,8 @@
 
 ((-> loader 'lib) "math/vector")
 
+((-> loader 'lib) "record")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (ensure-non-zero v) (v+ v (vec 0.001 0.001)))
@@ -18,6 +20,8 @@
 (define (normalize* v)
   (normalize
    (ensure-non-zero v)))
+
+;; (define normalize* (compose normalize ensure-non-zero))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -35,20 +39,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (distance a b)
-  (norm
-   (v- (-> a 'pos)
-       (-> b 'pos))))
+(define <boid> (record-template-obj 'boid (vec 'pos 'vel)))
+
+(define boid (-> <boid> 'boa))
+
+(define boid-pos ((-> <boid> 'getter) 'pos))
+(define boid-vel ((-> <boid> 'getter) 'vel))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (relative-position a b) (v- (-> b 'pos) (-> a 'pos)))
+(define (distance a b)
+  (norm
+   (v- (boid-pos a)
+       (boid-pos b))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (relative-position a b) (v- (boid-pos b) (boid-pos a)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (relative-angle a b)
   (angle-between (relative-position a b)
-                 (-> a 'vel)))
+                 (boid-vel a)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -58,10 +71,6 @@
 (define (in-view? self other angle)
   (<= (relative-angle self other)
       (/ angle 2.0)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (send msg) (lambda (obj) (-> obj msg)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -78,50 +87,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (average-position boids) (vaverage ((-> boids 'map) (send 'pos))))
-(define (average-velocity boids) (vaverage ((-> boids 'map) (send 'vel))))
+(define (average-position boids) (vaverage ((-> boids 'map) boid-pos)))
+(define (average-velocity boids) (vaverage ((-> boids 'map) boid-vel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (boid pos vel)
+(define <behaviour>
+  (record-template-obj 'behaviour (vec 'weight 'view-angle 'radius 'type)))
 
-  (let ((message-handler
-
-         (lambda (msg)
-
-           (case msg
-
-             ((pos) pos)
-             ((vel) vel)
-
-             ((pos!) (lambda (new) (set! pos new)))
-             ((vel!) (lambda (new) (set! vel new)))
-             
-             ))))
-
-    (vector 'boid #f message-handler)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (behaviour weight view-angle radius type)
-
-  (let ((message-handler
-
-         (lambda (msg)
-
-           (case msg
-
-             ((type) type)
-
-             ((weight) weight)
-             ((view-angle) view-angle)
-             ((radius) radius)
-
-             ((weight!)     (lambda (new) (set! weight new)))
-             ((view-angle!) (lambda (new) (set! view-angle new)))
-             ((radius!)     (lambda (new) (set! radius new)))))))
-
-    (vector 'behaviour #f message-handler)))
+(define behaviour (-> <behaviour> 'boa))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
