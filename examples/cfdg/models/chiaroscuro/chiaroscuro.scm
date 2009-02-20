@@ -1,5 +1,7 @@
 
-((-> loader 'lib) "cfdg")
+;; ((-> loader 'lib) "cfdg")
+
+(inc "cfdg")
 
 (random-source-randomize! default-random-source)
 
