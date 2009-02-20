@@ -5,6 +5,8 @@
 
   ((larceny) ((-> loader 'lib) "gl/larceny"))
 
+  ((ikarus)  ((-> loader 'lib) "gl/ikarus"))
+
   ((chicken) ((-> loader 'lib) "gl/chicken"))
 
   )
