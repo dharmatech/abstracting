@@ -135,22 +135,16 @@
 					    obj))
 				      (vector->list v))))
 
-		     ;; ((filter)
-		     
-		     ;;  (lambda (predicate)
-
-		     ;;    (let ((new (gro (-> self 'len))))
-
-		     ;; 	(let ((push (-> new 'push)))
-
-		     ;; 	  ((-> self 'each)
-
-		     ;; 	   (lambda (elt)
-
-		     ;; 	     (if (predicate elt)
-		     ;; 		 (push elt)))))
-
-		     ;; 	new)))
+		     ((filter)
+		      (lambda (predicate)
+		        (let ((new (gro-obj len)))
+                          (let ((push (-> new 'suffix)))
+                            (let ((push-if
+                                   (lambda (elt)
+                                     (if (predicate elt)
+                                         (push elt)))))
+                              (each push-if)))
+                          (-> new 'to-vec))))
 
 		     ;; ((remove)
 		     ;;  (lambda (predicate)
@@ -203,11 +197,18 @@
 
 		     ((/n)
 		      (lambda (n)
-			(map
-			 (lambda (elt)
-			   (/ elt n)))))
+		        (map
+		         (lambda (elt)
+		           (/ elt n)))))
+
+                     
+			 
 
 		     ((rest) (tail 1))
+
+                     ;;
+
+                     ((empty?) (= len 0))
 
 		     ;;
 
