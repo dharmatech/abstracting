@@ -23,11 +23,11 @@
 	       ((suffix)
 		(lambda (elt)
 
-		  (if (>= size (-> underlying 'len))
+                  (if (>= size (-> underlying 'len))
 		      (set! underlying
-			    ((-> underlying 'copy)
-			     (vec-of-len (* (-> underlying 'len) 2)))))
-		  
+		            ((-> underlying 'copy)
+		             (vec-of-len (* (-> underlying 'len) 2)))))
+
 		  ((-> underlying 'set) size elt)
 		  (set! size (+ size 1))))
 
@@ -45,6 +45,19 @@
 			   'show))))
 
 	       ((raw)
-		(vector (-> underlying 'raw) size))))))
+		(vector (-> underlying 'raw) size))
+
+               ((to-vec)
+                (let ((new (vec-of-len size)))
+                  (let ((each-index (-> new 'each-index))
+                        (ref (-> underlying 'ref))
+                        (set (-> new 'set)))
+                    (let ((transfer
+                           (lambda (i)
+                             (set i (ref i)))))
+                      (each-index transfer)))
+                  new))
+
+               ))))
 
       (vector 'gro #f message-handler))))
