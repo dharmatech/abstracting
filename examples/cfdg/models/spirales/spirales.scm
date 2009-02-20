@@ -1,5 +1,15 @@
 
-((-> loader 'lib) "cfdg")
+;; ((-> loader 'lib) "cfdg")
+
+;; (include "/root/abstracting/examples/cfdg/cfdg.scm")
+
+;; (inc "cfdg")
+
+;; (include (lib-source "cfdg"))
+
+;; (include "cfdg/cfdg.scm")
+
+(inc "cfdg")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -38,7 +48,7 @@
           (lambda ()
             (size 0.95)
             (x 2.0)
-            (rotate 12.0)
+            (rotate 12)
             (brightness 0.5)
             (hue 10.0)
             (saturation 1.5)
@@ -60,9 +70,8 @@
 
  (set! start-shape (lambda () (line)))
 
- (set! threshold 0.04))
+ (set! threshold 0.05))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (glutMainLoop)
-    
