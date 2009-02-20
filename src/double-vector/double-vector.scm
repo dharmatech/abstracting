@@ -9,9 +9,15 @@
          (lambda (i)
            (bytevector-ieee-double-native-ref bv (* i 8))))
         
+        ;; (set!
+        ;;  (lambda (i val)
+        ;;    (bytevector-ieee-double-native-set! bv (* i 8) val)))
+
         (set!
          (lambda (i val)
-           (bytevector-ieee-double-native-set! bv (* i 8) val))))
+           (bytevector-ieee-double-native-set! bv (* i 8) (inexact val))))
+
+        )
 
     (let ((message-handler
 
