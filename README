@@ -1,0 +1,42 @@
+
+This software has only been tested on Linux.
+
+----------------------------------------------------------------------
+* Install
+
+To install, edit the file 'abstracting' and change the line:
+
+    cd /root/abstracting
+
+to point to the actuall abstracting directory on your system.
+----------------------------------------------------------------------
+* Quick start
+
+Run one of:
+
+    abstracting --ypsilon
+    abstracting --larceny
+
+At the Scheme prompt, try some demos:
+
+    ((-> loader 'lib) "golden-section")
+
+    ((-> loader 'lib) "trails")
+
+    ((-> loader 'lib) "boids")
+
+    ((-> loader 'lib) "cfdg/models/chiaroscuro")
+
+    ((-> loader 'lib) "cfdg/models/spirales")
+
+    ((-> loader 'lib) "cfdg/models/game1-turn6")
+
+----------------------------------------------------------------------
+* Larceny
+
+On Larceny, you'll need to install these libraries:
+
+    http://proteus.freeshell.org/gl.sls
+
+    http://proteus.freeshell.org/glut.sls
+----------------------------------------------------------------------
