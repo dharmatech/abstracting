@@ -10,3 +10,12 @@
        (= 3 (vector-length obj))
        (symbol? (vector-ref obj 0))
        (procedure? (vector-ref obj 2))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Experimental
+
+(define (: obj msg . args) (apply (-> obj msg) args))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
