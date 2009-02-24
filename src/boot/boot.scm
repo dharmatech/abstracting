@@ -5,6 +5,8 @@
 ;;
 ;; (file-exists? path-string)
 
+(define abstracting-root-directory (current-directory))
+
 (current-directory "src")
 
 (load "obj/obj.scm")
