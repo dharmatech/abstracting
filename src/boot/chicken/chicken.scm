@@ -51,46 +51,17 @@
      (else
       (display "Compiling file: ") (display scheme-file) (newline)
 
-      ;; (system (string-append "csc -dynamic " scheme-file))
-
       (let ((include-path-options (generate-include-path-options)))
 
         (system
          (string-append "csc -dynamic "
                         include-path-options
-                        " -extend /scratch/_chicken-inc-macro-a.scm "
+                        " -extend "
+                        (string-append abstracting-root-directory
+                                       "/src/boot/chicken/inc/inc.scm")
+                        " "
                         scheme-file)))
 
-      ;; Alternate method:
-      ;;   analyze file being compiled
-      ;;   gather filenames referenced by load lines
-      ;;   if file contains macros, include it
-      
-      ;; (system (string-append "csc -dynamic -run-time-macros " scheme-file))
-
-      ;; (system
-      ;;  (string-append
-      ;;   "csc -dynamic -run-time-macros "
-      ;;   "-extend /root/abstracting/src/boot/chicken/chicken.scm "
-      ;;   scheme-file))
-
-      ;; (system
-      ;;  (string-append
-      ;;   "csc -dynamic -run-time-macros "
-      ;;   "-extend /root/abstracting/src/boot/chicken/chicken.scm "
-      ;;   scheme-file))
-
-      ;; (let ((include-dirs
-      ;;        (apply string-append
-      ;;               (map (lambda (path-string)
-      ;;                      (string-append "-I " path-string " "))
-      ;;                    (vector->list (-> (-> loader 'roots) 'raw))))))
-        
-        ;; (system (string-append "csc -dynamic -run-time-macros "
-        ;;                        include-dirs
-        ;;                        " "
-        ;;                        scheme-file))
-      
         (load scheme-file)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
