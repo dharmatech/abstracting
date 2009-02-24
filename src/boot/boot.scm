@@ -23,5 +23,5 @@
 
 ;; Helper for the '--lib' command line option
 
-;; (define (lib name)
-;;   (: loader 'lib name))
+(define-macro (loader-lib name)
+  `((-> loader 'lib) (symbol->string ',name)))
