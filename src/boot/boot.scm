@@ -18,3 +18,10 @@
 
 ((-> loader 'add-root) (string-append (current-directory) "/src"))
 ((-> loader 'add-root) (string-append (current-directory) "/examples"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Helper for the '--lib' command line option
+
+;; (define (lib name)
+;;   (: loader 'lib name))
