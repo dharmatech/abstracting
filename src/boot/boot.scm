@@ -19,7 +19,9 @@
 (define loader (make-loader))
 
 ((-> loader 'add-root) (string-append (current-directory) "/src"))
+((-> loader 'add-root) (string-append (current-directory) "/ext"))
 ((-> loader 'add-root) (string-append (current-directory) "/examples"))
+((-> loader 'add-root) (string-append (current-directory) "/experimental"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
