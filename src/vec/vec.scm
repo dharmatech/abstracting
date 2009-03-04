@@ -114,17 +114,23 @@
 			new))
 
 		     ((suffix)
-		      
 		      (lambda (elt)
-
 			(let ((new (vec-of-len (+ len 1))))
-
 			  (let ((set (-> new 'set)))
 			    (for len
 				 (lambda (i)
 				   (set i (ref i))))
 			    (set len elt))
+			  new)))
 
+                     ((prefix)
+                      (lambda (elt)
+			(let ((new (vec-of-len (+ len 1))))
+			  (let ((set (-> new 'set)))
+			    (for len
+				 (lambda (i)
+				   (set (+ i 1) (ref i))))
+			    (set 0 elt))
 			  new)))
 
 		     ((show)
