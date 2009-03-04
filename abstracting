@@ -39,7 +39,7 @@ done
 
 if   [ $scheme = ypsilon ]
 then
-  cat src/boot/ypsilon/ypsilon.scm - | ypsilon
+  cat src/boot/ypsilon/ypsilon.scm - | ypsilon --sitelib=support/ypsilon-sitelib
 elif [ $scheme = larceny ]
 then
   cat src/boot/larceny/larceny.scm - | larceny -err5rs
