@@ -106,6 +106,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (destroy-notify e)
+  (let ((ev (: XDestroyWindowEvent 'make (: e 'ptr))))
+    (let ((client (: clients 'ref (get ev 'window))))
+      (if client
+          (: clients 'delete client)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (grab-buttons client focused)
 
   ;; (display "inside grab-buttons\n")
@@ -375,6 +383,8 @@
 (define handlers (vec-of-len LASTEvent))
 
 (: handlers 'set ButtonPress button-press)
+
+(: handlers 'set DestroyNotify destroy-notify)
 
 (: handlers 'set EnterNotify enter-notify)
 
