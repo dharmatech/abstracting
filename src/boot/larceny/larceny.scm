@@ -20,19 +20,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (define-syntax define-macro
+;;    (lambda (x)
+;;      (syntax-case x ()
+;;        ((_ (name . args) . body)
+;;         (syntax (define-macro name (lambda args . body))))
+;;        ((_ name transformer)
+;;         (syntax
+;;          (define-syntax name
+;;            (lambda (y)
+;;              (syntax-case y ()
+;;                 ((_ . args)
+;;                  (datum->syntax
+;;                   (syntax _)
+;;                   (apply transformer
+;;                          (syntax->datum (syntax args)))))))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-syntax define-macro
    (lambda (x)
      (syntax-case x ()
-       ((_ (name . args) . body)
+       ((define-macro (name . args) . body)
         (syntax (define-macro name (lambda args . body))))
-       ((_ name transformer)
+       ((define-macro name transformer)
         (syntax
          (define-syntax name
            (lambda (y)
              (syntax-case y ()
-                ((_ . args)
+                ((define-macro . args)
                  (datum->syntax
-                  (syntax _)
+                  (syntax define-macro)
                   (apply transformer
                          (syntax->datum (syntax args)))))))))))))
 
