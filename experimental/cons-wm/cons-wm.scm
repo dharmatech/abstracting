@@ -106,6 +106,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define configure-request
+
+  (let ((wc (: XWindowChanges 'new)))
+
+    (lambda (e)
+
+      (let ((ev (: XConfigureRequestEvent 'make (: e 'ptr))))
+
+        (set wc 'x            (get ev 'x))
+        (set wc 'y            (get ev 'y))
+        (set wc 'width        (get ev 'width))
+        (set wc 'height       (get ev 'height))
+        (set wc 'border_width (get ev 'border_width))
+        (set wc 'sibling      (get ev 'above))
+        (set wc 'stack_mode   (get ev 'detail))
+
+        (XConfigureWindow dpy (get ev 'window) (get ev 'value_mask) (: wc 'ptr))
+
+        (XSync dpy False)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (destroy-notify e)
   (let ((ev (: XDestroyWindowEvent 'make (: e 'ptr))))
     (let ((client (: clients 'ref (get ev 'window))))
@@ -384,6 +406,8 @@
 
 (: handlers 'set ButtonPress button-press)
 
+(: handlers 'set ConfigureRequest configure-request)
+
 (: handlers 'set DestroyNotify destroy-notify)
 
 (: handlers 'set EnterNotify enter-notify)
@@ -429,6 +453,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+
 ;; (set! dpy (XOpenDisplay 0))
 
 (set! dpy (XOpenDisplay ":5"))
@@ -447,6 +473,9 @@
 
 (set! move-cursor   (XCreateFontCursor dpy XC_fleur))
 (set! resize-cursor (XCreateFontCursor dpy XC_sizing))
+
+(XSetErrorHandler (lambda (dpy ee)
+                    (display "Error handler called\n")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
