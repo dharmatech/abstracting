@@ -1957,20 +1957,13 @@
 
  (typedef uint8_t unsigned-char)
 
- ;; temporarily here till 'char*' is fixed
- 
- (c-function void*   XOpenDisplay                      (char*))
- (c-function int     XAllocNamedColor                  (void* unsigned-long char* void* void*))
-
- (typedef void* char*)
- 
  (typedef void* char**)
  (typedef void* char***)
 
  (typedef void* unsigned-char*)
  (typedef void* unsigned-char**)
 
- (typedef void* const-char*)
+ (typedef char* const-char*)
 
  (typedef void* const-unsigned-char*)
 
@@ -3195,7 +3188,7 @@
  (c-function XImage*               XGetImage                         (Display* Drawable int int unsigned-int unsigned-int unsigned-long int))
  (c-function XImage*               XGetSubImage                      (Display* Drawable int int unsigned-int unsigned-int unsigned-long int XImage* int int))
 
- ;; (c-function Display*              XOpenDisplay                      (const-char*))
+ (c-function Display*              XOpenDisplay                      (const-char*))
   
  (c-function void                  XrmInitialize                     ())
  (c-function char*                 XFetchBytes                       (Display* int*))
@@ -3297,9 +3290,8 @@
  (c-function Status                XAllocColorCells                  (Display* Colormap Bool unsigned-long* unsigned-int unsigned-long* unsigned-int))
  (c-function Status                XAllocColorPlanes                 (Display* Colormap Bool unsigned-long* int int int int unsigned-long* unsigned-long* unsigned-long*))
 
- ;; (c-function Status                XAllocNamedColor                  (Display* Colormap const-char* XColor* XColor*))
- ;; (c-function Status                XAllocNamedColor                  (Display* Colormap const-char* XColor* XColor*))
- 
+ (c-function Status                XAllocNamedColor                  (Display* Colormap const-char* XColor* XColor*))
+
  (c-function int                   XAllowEvents                      (Display* int Time))
  (c-function int                   XAutoRepeatOff                    (Display*))
  (c-function int                   XAutoRepeatOn                     (Display*))
