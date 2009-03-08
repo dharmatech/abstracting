@@ -66,6 +66,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Compatibility with R6RS bytevectors
+
 (use srfi-4)
 
 (define (make-bytevector n)
@@ -73,11 +75,36 @@
 
 (define bytevector-length blob-size)
 
+(define (bytevector-s32-native-ref bv i)
+  (s32vector-ref (blob->s32vector/shared bv) (/ i 4)))
+
 (define (bytevector-ieee-double-native-ref bv i)
   (f64vector-ref (blob->f64vector/shared bv) (/ i 8)))
 
 (define (bytevector-ieee-double-native-set! bv i val)
   (f64vector-set! (blob->f64vector/shared bv) (/ i 8) val))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Compatability with R6RS hashtables
+
+(define (make-eq-hashtable) (make-hash-table eq?))
+
+(define hashtable-size hash-table-size)
+
+(define hashtable-ref  hash-table-ref/default)
+
+(define hashtable-set! hash-table-set!)
+
+(define hashtable-delete! hash-table-delete!)
+
+(define hashtable-contains? hash-table-exists?)
+
+(define hashtable-copy hash-table-copy)
+
+;; (define hashtable-clear! ...)
+
+(define hashtable-keys hash-table-keys)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
