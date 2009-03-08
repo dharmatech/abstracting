@@ -9,7 +9,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "/scratch/_hashtable-obj-b.scm")
+((-> loader 'lib) "hashtable-obj")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -383,8 +383,13 @@
                                           y-return
                                           not-needed not-needed
                                           not-needed not-needed)
-                            (set! x (bytevector-c-int-ref x-return 0))
-                            (set! y (bytevector-c-int-ref y-return 0)))
+                            
+                            ;; (set! x (bytevector-c-int-ref x-return 0))
+                            ;; (set! y (bytevector-c-int-ref y-return 0))
+
+                            (set! x (bytevector-s32-native-ref x-return 0))
+                            (set! y (bytevector-s32-native-ref y-return 0))
+                            )
 
                           (let ((new-width  (- (get ev 'x) x))
                                 (new-height (- (get ev 'y) y)))
