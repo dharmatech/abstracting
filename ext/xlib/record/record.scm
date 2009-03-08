@@ -3,7 +3,7 @@
 
 (case scheme-implementation
 
-  ((ypsilon) ((-> loader 'lib) "xlib/record/ypsilon")))
+  ((ypsilon chicken) ((-> loader 'lib) "xlib/record/ypsilon")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
