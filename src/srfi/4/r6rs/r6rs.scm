@@ -119,4 +119,9 @@
                   bytevector-ieee-double-native-set!))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Sorta kludgy. R6RSers don't have support for SRFI-4 in their FFI
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (s32vector-ffi hv) (s32vector-data hv))
+(define (u32vector-ffi hv) (u32vector-data hv))
+(define (f64vector-ffi hv) (f64vector-data hv))
