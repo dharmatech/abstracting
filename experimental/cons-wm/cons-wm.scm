@@ -9,6 +9,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+((-> loader 'lib) "hvec")
+
 ((-> loader 'lib) "hashtable-obj")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -280,20 +282,35 @@
 
           (else
 
-           (let ((not-needed/window       (make-bytevector 4))
-                 (not-needed/int          (make-bytevector 4))
-                 (not-needed/unsigned-int (make-bytevector 4))
-                 (x-return (make-bytevector 4))
-                 (y-return (make-bytevector 4)))
+           ;; (let ((not-needed/window       (make-bytevector 4))
+           ;;       (not-needed/int          (make-bytevector 4))
+           ;;       (not-needed/unsigned-int (make-bytevector 4))
+           ;;       (x-return (make-bytevector 4))
+           ;;       (y-return (make-bytevector 4)))
+
+           ;;   (XQueryPointer dpy root
+           ;;                  not-needed/window
+           ;;                  not-needed/window
+           ;;                  x-return
+           ;;                  y-return
+           ;;                  not-needed/int
+           ;;                  not-needed/int
+           ;;                  not-needed/unsigned-int)
+
+           (let ((not-needed/window       (u32-vec 0))
+                 (not-needed/int          (s32-vec 0))
+                 (not-needed/unsigned-int (u32-vec 0))
+                 (x-return                (s32-vec 0))
+                 (y-return                (s32-vec 0)))
 
              (XQueryPointer dpy root
-                            not-needed/window
-                            not-needed/window
-                            x-return
-                            y-return
-                            not-needed/int
-                            not-needed/int
-                            not-needed/unsigned-int)
+                            (: not-needed/window 'raw)
+                            (: not-needed/window 'raw)
+                            (: x-return 'raw)
+                            (: y-return 'raw)
+                            (: not-needed/int 'raw)
+                            (: not-needed/int 'raw)
+                            (: not-needed/unsigned-int 'raw))
 
              (if use-grab (XGrabServer dpy))
 
@@ -374,21 +391,27 @@
                         (let ((x #f)
                               (y #f))
 
-                          (let ((x-return   (make-bytevector 4))
-                                (y-return   (make-bytevector 4))
-                                (not-needed (make-bytevector 4)))
+                          (let ((x-return   (s32-vec 0))
+                                (y-return   (s32-vec 0)))
+                            
                             (XGetGeometry dpy client
-                                          (make-bytevector 4)
-                                          x-return
-                                          y-return
-                                          not-needed not-needed
-                                          not-needed not-needed)
+                                          (: (u32-vec 0) 'raw)
+                                          (: x-return 'raw)
+                                          (: y-return 'raw)
+                                          (: (u32-vec 0) 'raw)
+                                          (: (u32-vec 0) 'raw)
+                                          (: (u32-vec 0) 'raw)
+                                          (: (u32-vec 0) 'raw))
                             
                             ;; (set! x (bytevector-c-int-ref x-return 0))
                             ;; (set! y (bytevector-c-int-ref y-return 0))
 
-                            (set! x (bytevector-s32-native-ref x-return 0))
-                            (set! y (bytevector-s32-native-ref y-return 0))
+                            ;; (set! x (bytevector-s32-native-ref x-return 0))
+                            ;; (set! y (bytevector-s32-native-ref y-return 0))
+
+                            (set! x (: x-return 'ref 0))
+                            (set! y (: y-return 'ref 0))
+                            
                             )
 
                           (let ((new-width  (- (get ev 'x) x))
