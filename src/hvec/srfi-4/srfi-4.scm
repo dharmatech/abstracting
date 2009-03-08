@@ -9,7 +9,11 @@
 
   (let ((len (lambda (     ) (s32vector-length hv      )))
         (ref (lambda (i    ) (s32vector-ref    hv i    )))
-        (set (lambda (i val) (s32vector-set!   hv i val))))
+        (set (lambda (i val) (s32vector-set!   hv i val)))
+
+        (raw (lambda () hv))
+
+        (ffi (lambda () (s32vector-ffi hv))))
 
     (let ((message-handler
 
@@ -20,7 +24,8 @@
                ((len) len)
                ((ref) ref)
                ((set) set)
-               ((raw) (lambda () hv))))))
+               ((raw) raw)
+               ((ffi) ffi)))))
 
       (vector 's32-vec hv message-handler))))
 
@@ -34,7 +39,11 @@
 
   (let ((len (lambda (     ) (u32vector-length hv      )))
         (ref (lambda (i    ) (u32vector-ref    hv i    )))
-        (set (lambda (i val) (u32vector-set!   hv i val))))
+        (set (lambda (i val) (u32vector-set!   hv i val)))
+
+        (raw (lambda () hv))
+
+        (ffi (lambda () (u32vector-ffi hv))))
 
     (let ((message-handler
 
@@ -45,7 +54,8 @@
                ((len) len)
                ((ref) ref)
                ((set) set)
-               ((raw) (lambda () hv))))))
+               ((raw) raw)
+               ((ffi) ffi)))))
 
       (vector 'u32-vec hv message-handler))))
 
@@ -59,7 +69,11 @@
 
   (let ((len (lambda (     ) (f64vector-length hv      )))
         (ref (lambda (i    ) (f64vector-ref    hv i    )))
-        (set (lambda (i val) (f64vector-set!   hv i val))))
+        (set (lambda (i val) (f64vector-set!   hv i val)))
+
+        (raw (lambda () hv))
+
+        (ffi (lambda () (f64vector-ffi hv))))
 
     (let ((message-handler
 
@@ -70,7 +84,8 @@
                ((len) len)
                ((ref) ref)
                ((set) set)
-               ((raw) (lambda () hv))))))
+               ((raw) raw)
+               ((ffi) ffi)))))
 
       (vector 'f64-vec hv message-handler))))
 
