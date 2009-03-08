@@ -304,13 +304,13 @@
                  (y-return                (s32-vec 0)))
 
              (XQueryPointer dpy root
-                            (: not-needed/window 'raw)
-                            (: not-needed/window 'raw)
-                            (: x-return 'raw)
-                            (: y-return 'raw)
-                            (: not-needed/int 'raw)
-                            (: not-needed/int 'raw)
-                            (: not-needed/unsigned-int 'raw))
+                            (: not-needed/window 'ffi)
+                            (: not-needed/window 'ffi)
+                            (: x-return 'ffi)
+                            (: y-return 'ffi)
+                            (: not-needed/int 'ffi)
+                            (: not-needed/int 'ffi)
+                            (: not-needed/unsigned-int 'ffi))
 
              (if use-grab (XGrabServer dpy))
 
@@ -395,13 +395,13 @@
                                 (y-return   (s32-vec 0)))
                             
                             (XGetGeometry dpy client
-                                          (: (u32-vec 0) 'raw)
-                                          (: x-return 'raw)
-                                          (: y-return 'raw)
-                                          (: (u32-vec 0) 'raw)
-                                          (: (u32-vec 0) 'raw)
-                                          (: (u32-vec 0) 'raw)
-                                          (: (u32-vec 0) 'raw))
+                                          (: (u32-vec 0) 'ffi)
+                                          (: x-return 'ffi)
+                                          (: y-return 'ffi)
+                                          (: (u32-vec 0) 'ffi)
+                                          (: (u32-vec 0) 'ffi)
+                                          (: (u32-vec 0) 'ffi)
+                                          (: (u32-vec 0) 'ffi))
                             
                             ;; (set! x (bytevector-c-int-ref x-return 0))
                             ;; (set! y (bytevector-c-int-ref y-return 0))
