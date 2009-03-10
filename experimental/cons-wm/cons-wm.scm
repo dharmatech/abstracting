@@ -4,6 +4,7 @@
 ((-> loader 'lib) "record")
 
 ((-> loader 'lib) "xlib")
+((-> loader 'lib) "xlib/keysym")
 
 ((-> loader 'lib) "xlib/record")
 
@@ -48,6 +49,11 @@
 (define mod-key Mod4Mask)
 
 (define use-grab #f)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define key-record-template
+  (record-template-obj 'key (vec-from-list '(mod keysym procedure))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -105,6 +111,19 @@
                    (clean-mask (get ev 'state))))
 
            ((get button 'procedure)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (key-press e)
+  (let ((ev (: XKeyEvent 'make (: e 'ptr))))
+    (let ((keysym (XKeycodeToKeysym dpy (get ev 'keycode) 0)))
+      ((-> keys 'each)
+       (lambda (key)
+         (if (and (= keysym (get key 'keysym))
+                  (= (clean-mask (get key 'mod))
+                     (clean-mask (get ev  'state)))
+                  (get key 'procedure))
+             ((get key 'procedure))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -168,6 +187,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (grab-keys)
+  (let ((modifiers (vec 0 LockMask num-lock-mask (bitwise-ior num-lock-mask
+                                                              LockMask))))
+    (XUngrabKey dpy AnyKey AnyModifier root)
+    ((-> keys 'each)
+     (lambda (key)
+       (cond ((XKeysymToKeycode dpy (get key 'keysym)) =>
+              (lambda (code)
+                ;; Kludge for now. Some FFIs return a Scheme char, others a number.
+                (let ((code (if (char? code) (char->integer code) code)))
+                  ((-> modifiers 'each)
+                   (lambda (modifier)
+                     (XGrabKey dpy code (bitwise-ior (get key 'mod) modifier)
+                               root True GrabModeAsync GrabModeAsync)))))))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (focus-in ev)
   (let ((ev (: XFocusChangeEvent 'make (: ev 'ptr))))
     (if (and selected
@@ -179,11 +216,15 @@
 
 (define (focus client)
 
-  ;; (display "inside focus\n")
+  (display "inside focus\n")
 
   (if (and selected (not (equal? client selected)))
-      (begin (grab-buttons selected #f)
-             (XSetWindowBorder dpy selected (get-color normal-border-color))))
+      (begin (display "  branch taken\n")
+             (grab-buttons selected #f)
+             (display "  grab-buttons returned\n")
+             (XSetWindowBorder dpy selected (get-color normal-border-color))
+             (display "  XSetWindowBorder returned\n")
+             ))
 
   (cond (client (grab-buttons client #t)
                 (XSetWindowBorder dpy client (get-color selected-border-color))
@@ -197,7 +238,7 @@
 
 (define (enter-notify ev)
 
-  ;; (display "inside enter-notify\n")
+  (display "inside enter-notify\n")
 
   (let ((ev (: XCrossingEvent 'make (: ev 'ptr))))
 
@@ -442,6 +483,8 @@
 
 (: handlers 'set FocusIn focus-in)
 
+(: handlers 'set KeyPress key-press)
+
 (: handlers 'set MapRequest map-request)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -470,6 +513,14 @@
 ;; more config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define MODKEY Mod4Mask)
+
+(define keys
+  (let ((key (-> key-record-template 'boa)))
+    (vec
+     (key (bitwise-ior MODKEY) XK_Return (lambda () (system "rxvt &")))
+     (key (bitwise-ior MODKEY) XK_e      (lambda () (system "emacsclient -c &"))))))
+
 (define buttons
 
   (let ((button (-> button-record-template 'boa)))
@@ -481,15 +532,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-;; (set! dpy (XOpenDisplay 0))
-
-(set! dpy (XOpenDisplay ":5"))
+(set! dpy (XOpenDisplay #f))
 
 (set! screen (XDefaultScreen dpy))
 
 (set! root (XRootWindow dpy screen))
+
+(set! move-cursor   (XCreateFontCursor dpy XC_fleur))
+(set! resize-cursor (XCreateFontCursor dpy XC_sizing))
 
 (XSelectInput dpy root (bitwise-ior SubstructureRedirectMask
                                     SubstructureNotifyMask
@@ -499,11 +549,11 @@
                                     StructureNotifyMask
                                     PropertyChangeMask))
 
-(set! move-cursor   (XCreateFontCursor dpy XC_fleur))
-(set! resize-cursor (XCreateFontCursor dpy XC_sizing))
+(grab-keys)
 
 (XSetErrorHandler (lambda (dpy ee)
-                    (display "Error handler called\n")))
+                    (display "Error handler called\n")
+                    1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
