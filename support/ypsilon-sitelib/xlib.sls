@@ -1957,6 +1957,8 @@
 
  (typedef uint8_t unsigned-char)
 
+ ;; (typedef char unsigned-char)
+
  (typedef void* char**)
  (typedef void* char***)
 
@@ -1991,7 +1993,9 @@
  (typedef XID Colormap)
  (typedef XID GContext)
  (typedef XID KeySym)
+
  (typedef unsigned-char KeyCode)
+ 
  (typedef void* Display*)
  (typedef void* XExtData*)
  (typedef void* Visual*)
