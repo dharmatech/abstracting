@@ -68,6 +68,16 @@ they are there so take care.
     csc xlib.scm -dynamic -L/usr/X11R7/lib -lX11 -I/usr/X11R7/include
 
 ----------------------------------------------------------------------
+* xlib on Larceny
+
+    $ larceny
+
+    > (load "support/larceny/xlib/xlib.sch")
+
+    > (compile-file "support/larceny/xlib/xlib.sch")
+
+Both of those steps take a while.
+----------------------------------------------------------------------
 * cons-wm
 
 In a terminal, start 'Xnest' on display ':5' :
@@ -82,3 +92,5 @@ In a terminal, start abstracting and load cons-wm:
 
 mod-4 + button-1 is drag   window
 mod-4 + button-3 is resize window
+mod-4 + Return   is rxvt
+mod-4 + e        is emacsclient -c
