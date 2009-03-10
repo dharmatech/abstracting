@@ -5,4 +5,6 @@
 
   ((chicken) ((-> loader 'lib) "xlib/chicken"))
 
+  ((larceny) ((-> loader 'lib) "xlib/larceny"))
+
   )

@@ -103,3 +103,10 @@
 
 (define (inc name)
   ((-> loader 'lib) name))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(import (rnrs hashtables)
+        (rnrs arithmetic bitwise))
+
+(import (primitives eval interaction-environment system))

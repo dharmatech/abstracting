@@ -1,4 +1,6 @@
 
+(import (rnrs records syntactic))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (srfi-4-functor size _make unbox ref set)

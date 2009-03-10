@@ -69,7 +69,11 @@
 (typedef XID Colormap)
 (typedef XID GContext)
 (typedef XID KeySym)
-(typedef unsigned-char KeyCode)
+
+;; Override so that we get numbers for KeyCode
+;; (typedef unsigned-char KeyCode)
+(typedef unsigned-int KeyCode)
+
 (typedef void* Display*)
 (typedef void* XExtData*)
 (typedef void* Visual*)
