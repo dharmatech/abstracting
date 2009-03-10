@@ -42,7 +42,7 @@ then
   cat src/boot/ypsilon/ypsilon.scm - | ypsilon --sitelib=support/ypsilon-sitelib
 elif [ $scheme = larceny ]
 then
-  cat src/boot/larceny/larceny.scm - | larceny -err5rs
+  cat src/boot/larceny/larceny.scm - | larceny -path support/larceny -err5rs
 elif [ $scheme = ikarus ]
 then
   cat src/boot/ikarus/ikarus.scm - | ikarus
