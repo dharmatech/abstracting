@@ -3444,7 +3444,11 @@
  (c-function Bool                  XQueryPointer                     (Display* Window Window* Window* int* int* int* int* unsigned-int*))
  (c-function int                   XQueryTextExtents                 (Display* XID const-char* int int* int* int* XCharStruct*))
  (c-function int                   XQueryTextExtents16               (Display* XID const-XChar2b* int int* int* int* XCharStruct*))
- (c-function Status                XQueryTree                        (Display* Window Window* Window* Window** unsigned-int*))
+ 
+ ;; (c-function Status                XQueryTree                        (Display* Window Window* Window* Window** unsigned-int*))
+
+ (c-function Status XQueryTree (void* unsigned-long void* void* void* void*))
+ 
  (c-function int                   XRaiseWindow                      (Display* Window))
  (c-function int                   XReadBitmapFile                   (Display* Drawable const-char* unsigned-int* unsigned-int* Pixmap* int* int*))
  (c-function int                   XReadBitmapFileData               (const-char* unsigned-int* unsigned-int* unsigned-char** int* int*))

@@ -1938,3 +1938,43 @@
   XC_xterm
 
   make-XEvent))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(import (primitives sizeof:pointer
+                    %get-pointer
+                    %peek32u
+                    record-constructor
+                    void*-rt))
+
+(define (x-query-tree dpy win)
+
+  (let ((root-return      (make-bytevector 4))
+        (parent-return    (make-bytevector 4))
+        (children-return  (make-bytevector sizeof:pointer))
+        (nchildren-return (make-bytevector 4)))
+
+    (XQueryTree dpy
+                win
+                root-return
+                parent-return
+                children-return
+                nchildren-return)
+
+    (let ((root          (bytevector-u32-native-ref root-return      0))
+          (parent        (bytevector-u32-native-ref parent-return    0))
+          (children-addr (%get-pointer              children-return  0))
+          (nchildren     (bytevector-u32-native-ref nchildren-return 0)))
+
+      (let ((children (make-vector nchildren)))
+    
+        (let loop ((i 0))
+
+          (cond ((>= i nchildren)
+                 (XFree ((record-constructor void*-rt) children-addr))
+                 children)
+                (else
+                 (vector-set! children i (%peek32u (+ children-addr (* i 4))))
+                 (loop (+ i 1)))))
+
+        (list root parent children)))))
