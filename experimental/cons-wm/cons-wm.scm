@@ -2,17 +2,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ((-> loader 'lib) "record")
-
+((-> loader 'lib) "hvec")
+((-> loader 'lib) "hashtable-obj")
 ((-> loader 'lib) "xlib")
 ((-> loader 'lib) "xlib/keysym")
-
 ((-> loader 'lib) "xlib/record")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-((-> loader 'lib) "hvec")
-
-((-> loader 'lib) "hashtable-obj")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -510,6 +504,67 @@
         (loop)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Workspaces
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(: loader 'lib "gro")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define x-window-is-viewable?
+  (let ((wa (: XWindowAttributes 'new)))
+    (lambda (dpy win)
+      (XGetWindowAttributes dpy win (: wa 'ptr))
+      (= (get wa 'map_state) IsViewable))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (mapped-clients)
+
+  (let ((root-children (vec-obj (x-query-tree-children dpy root))))
+
+    (let ((viewable-root-children
+           (: root-children 'filter
+              (lambda (id)
+                (x-window-is-viewable? dpy id)))))
+      
+      (let ((viewable-clients
+             (: viewable-root-children 'filter
+                (lambda (id)
+                  (: clients 'contains? id)))))
+
+        viewable-clients))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define workspaces (vec-of-len 10))
+
+(define current-workspace 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define switch-to-workspace
+
+  (let ((unmap-client
+         (lambda (id)
+           (XUnmapWindow dpy id)))
+
+        (map-client
+         (lambda (id)
+           (XMapWindow dpy id))))
+
+    (lambda (i)
+
+      (: workspaces 'set current-workspace (mapped-clients))
+
+      (: (mapped-clients) 'each unmap-client)
+
+      (if (: workspaces 'ref i)
+          (: (: workspaces 'ref i) 'each map-client))
+
+      (set! current-workspace i))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; more config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -519,7 +574,16 @@
   (let ((key (-> key-record-template 'boa)))
     (vec
      (key (bitwise-ior MODKEY) XK_Return (lambda () (system "rxvt &")))
-     (key (bitwise-ior MODKEY) XK_e      (lambda () (system "emacsclient -c &"))))))
+     (key (bitwise-ior MODKEY) XK_e      (lambda () (system "emacsclient -c &")))
+     (key (bitwise-ior MODKEY) XK_m      (lambda () (system "seamonkey -mail &")))
+
+     (key mod-key XK_1 (lambda () (switch-to-workspace 1)))
+     (key mod-key XK_2 (lambda () (switch-to-workspace 2)))
+     (key mod-key XK_3 (lambda () (switch-to-workspace 3)))
+     (key mod-key XK_4 (lambda () (switch-to-workspace 4)))
+
+     )))
+          
 
 (define buttons
 
