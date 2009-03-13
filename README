@@ -5,6 +5,12 @@ Everything works out of the box in Ypsilon Scheme.
 
 Other Scheme's have specific instructions below.
 
+The implementation versions that should be used:
+
+    Ypsilon (svn)
+    Larceny (svn)
+    Chicken (3.4.0)
+
 ----------------------------------------------------------------------
 * Install
 
@@ -80,17 +86,13 @@ Both of those steps take a while.
 ----------------------------------------------------------------------
 * cons-wm
 
-In a terminal, start 'Xnest' on display ':5' :
-
-    $ Xnest :5
-
-In a terminal, start abstracting and load cons-wm:
-
-    $ abstracting
-
     > (: loader 'lib "cons-wm")
 
 mod-4 + button-1 is drag   window
 mod-4 + button-3 is resize window
 mod-4 + Return   is rxvt
 mod-4 + e        is emacsclient -c
+mod-4 + 1        is switch-to-workspace 1
+mod-4 + 2        is switch-to-workspace 2
+mod-4 + 3        is switch-to-workspace 3
+mod-4 + 4        is switch-to-workspace 4
