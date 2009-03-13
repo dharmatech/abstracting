@@ -88,6 +88,11 @@ Both of those steps take a while.
 
     > (: loader 'lib "cons-wm")
 
+Note for Ypsilon users, the first time you load cons-wm, Ypsilon will
+compile the xlib library. This takes a little while. It might seem
+like cons-wm is being unresponsive during this time. Subsequent starts
+should be much faster.
+
 mod-4 + button-1 is drag   window
 mod-4 + button-3 is resize window
 mod-4 + Return   is rxvt
