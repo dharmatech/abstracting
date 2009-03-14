@@ -4,7 +4,11 @@
 ((-> loader 'lib) "record")
 ((-> loader 'lib) "hvec")
 ((-> loader 'lib) "hashtable-obj")
+
+(display "Loading xlib...")
 ((-> loader 'lib) "xlib")
+(display "complete\n")
+
 ((-> loader 'lib) "xlib/keysym")
 ((-> loader 'lib) "xlib/record")
 
@@ -573,14 +577,22 @@
 (define keys
   (let ((key (-> key-record-template 'boa)))
     (vec
-     (key (bitwise-ior MODKEY) XK_Return (lambda () (system "rxvt &")))
-     (key (bitwise-ior MODKEY) XK_e      (lambda () (system "emacsclient -c &")))
-     (key (bitwise-ior MODKEY) XK_m      (lambda () (system "seamonkey -mail &")))
+     
+     (key MODKEY XK_Return (lambda () (system "rxvt &")))
+     (key MODKEY XK_e      (lambda () (system "emacsclient -c &")))
+     (key MODKEY XK_w      (lambda () (system "seamonkey &")))
+     (key MODKEY XK_m      (lambda () (system "seamonkey -mail &")))
 
      (key mod-key XK_1 (lambda () (switch-to-workspace 1)))
      (key mod-key XK_2 (lambda () (switch-to-workspace 2)))
      (key mod-key XK_3 (lambda () (switch-to-workspace 3)))
      (key mod-key XK_4 (lambda () (switch-to-workspace 4)))
+     (key mod-key XK_5 (lambda () (switch-to-workspace 5)))
+     (key mod-key XK_6 (lambda () (switch-to-workspace 6)))
+     (key mod-key XK_7 (lambda () (switch-to-workspace 7)))
+     (key mod-key XK_8 (lambda () (switch-to-workspace 8)))
+     (key mod-key XK_9 (lambda () (switch-to-workspace 9)))
+     (key mod-key XK_0 (lambda () (switch-to-workspace 0)))
 
      )))
           
@@ -618,6 +630,8 @@
 (XSetErrorHandler (lambda (dpy ee)
                     (display "Error handler called\n")
                     1))
+
+(display "cons-wm is setup\n")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
