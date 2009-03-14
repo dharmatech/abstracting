@@ -213,3 +213,17 @@
 		 ))))
 
 	(vector 'window #f message-handler)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (ortho-2d x-min x-max y-min y-max)
+  (lambda (width height)
+    (glEnable GL_BLEND)
+    (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
+    (glViewport 0 0 width height)
+    (glMatrixMode GL_PROJECTION)
+    (glLoadIdentity)
+    (glOrtho x-min x-max y-min y-max -10.0 10.0)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
