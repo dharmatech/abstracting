@@ -1,12 +1,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-((-> loader 'lib) "math")
-
-((-> loader 'lib) "gl")
-
-((-> loader 'lib) "glut")
-
+(: loader 'lib "math")
+(: loader 'lib "gl")
+(: loader 'lib "glut")
+(: loader 'lib "glo")
 (: loader 'lib "srfi/27")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -110,7 +108,7 @@
 
 (display "(lambda (x y) ")
 
-(define fun (random-procedure 5))
+(define fun (random-procedure 7))
 
 (display ")\n")
 
@@ -126,16 +124,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(glutReshapeFunc
- (lambda (width height)
+;; (glutReshapeFunc
+;;  (lambda (width height)
 
-   (glEnable GL_BLEND)
-   (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
-   (glViewport 0 0 width height)
+;;    (glEnable GL_BLEND)
+;;    (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
+;;    (glViewport 0 0 width height)
 
-   (glMatrixMode GL_PROJECTION)
-   (glLoadIdentity)
-   (glOrtho -1.0 1.0 -1.0 1.0 -10.0 10.0)))
+;;    (glMatrixMode GL_PROJECTION)
+;;    (glLoadIdentity)
+;;    (glOrtho -1.0 1.0 -1.0 1.0 -10.0 10.0)))
+
+(glutReshapeFunc (ortho-2d -1.0 1.0 -1.0 1.0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
