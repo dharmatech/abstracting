@@ -29,3 +29,9 @@
 
 (define-macro (loader-lib name)
   `((-> loader 'lib) (symbol->string ',name)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (print . args)
+  (for-each display args))
+
