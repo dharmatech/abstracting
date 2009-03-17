@@ -178,6 +178,12 @@
 		     ((call-on-components)
 		      (lambda (procedure)
 			(apply procedure (vector->list v))))
+                     
+                     ;;
+
+                     ((apply)
+                      (lambda (procedure)
+                        (apply procedure (vector->list v))))
 
 		     ;;
 
