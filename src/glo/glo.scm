@@ -1,6 +1,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+((-> loader 'lib) "math/vector")
+
 ((-> loader 'lib) "gl")
 
 ((-> loader 'lib) "glut")
@@ -9,11 +11,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (v- a b)
-  (vec (- (-> a 'first)
-	  (-> b 'first))
-       (- (-> a 'second)
-	  (-> b 'second))))
+(define (gl-vertex-2d vertex)
+  (: vertex 'apply glVertex2d))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (gl-vertices-2d vertices)
+  (: vertices 'each gl-vertex-2d))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -46,55 +50,140 @@
 
 	  (activate-fill-color
 	   (lambda ()
-	     ((-> fill-color 'call-on-components) glColor4d))))
+	     ((-> fill-color 'call-on-components) glColor4d)))
 
-      (let ((ellipse
+          (no-stroke
+           (lambda ()
+             (set! stroke-color (rgba 1.0 1.0 1.0 0.0))))
 
-	     (lambda (dim)
+          (no-fill
+           (lambda ()
+             (set! fill-color (rgba 1.0 1.0 1.0 0.0))))
+          
+          )
 
-	       (glPolygonMode GL_FRONT_AND_BACK GL_FILL)
+      (let ((fill-mode
+             (lambda ()
+               (glPolygonMode GL_FRONT_AND_BACK GL_FILL)
+               (activate-fill-color)))
+            
+            (stroke-mode
+             (lambda ()
+               (glPolygonMode GL_FRONT_AND_BACK GL_LINE)
+               (activate-stroke-color))))
 
-	       (activate-stroke-color)
+        (let (
 
-	       (gl-ellipse pos dim)
-	       
-	       (activate-fill-color)
+              (polygon
+               (lambda (seq)
+                 (fill-mode)   (glBegin GL_POLYGON) (gl-vertices-2d seq) (glEnd)
+                 (stroke-mode) (glBegin GL_POLYGON) (gl-vertices-2d seq) (glEnd)))
 
-	       (gl-ellipse pos 
-			   (v- dim
-			       (vec (* 2 stroke-width)
-				    (* 2 stroke-width)))))))
+              (ellipse
 
-	(let ((message-handler
+               (lambda (dim)
 
-	       (lambda (msg)
+                 (glPolygonMode GL_FRONT_AND_BACK GL_FILL)
 
-		 (case msg
+                 (activate-stroke-color)
 
-		   ((move-to) (lambda (new) (set! pos new)))
+                 (gl-ellipse pos dim)
+                 
+                 (activate-fill-color)
 
-		   ((set-stroke-color) (lambda (color) (set! stroke-color color)))
-		   ((set-fill-color)   (lambda (color) (set! fill-color   color)))
+                 (gl-ellipse pos 
+                             (v- dim
+                                 (vec (* 2 stroke-width)
+                                      (* 2 stroke-width)))))))
 
-		   ((set-stroke-width) (lambda (width) (set! stroke-width width)))
+          (let ((rect*
+                 (lambda (x y width height)
+                   (let ((x+ (+ x width))
+                         (y+ (+ y height)))
+                     (polygon (vec (vec x  y)
+                                   (vec x+ y)
+                                   (vec x+ y+)
+                                   (vec x  y+)))))))
 
-		   ((line)
-		    (lambda (a b)
-		      (activate-stroke-color)
-		      (glBegin GL_LINES)
-		      ((-> a 'call-on-components) glVertex2d)
-		      ((-> b 'call-on-components) glVertex2d)
-		      (glEnd)))
+            (let ((rect
+                   (lambda (pos dim)
+                     (rect* (: pos 'ref 0)
+                            (: pos 'ref 1)
+                            (: dim 'ref 0)
+                            (: dim 'ref 1)))))
 
-		   ((ellipse) ellipse)
+          (let ((message-handler
 
-		   ((circle)
-		    (lambda (size)
-		      (ellipse (vec size size))))
+                 (lambda (msg)
 
-		   ))))
+                   (case msg
 
-	  (vector 'pen #f message-handler))))))
+                     ((move-to) (lambda (new) (set! pos new)))
+
+                     ((set-stroke-color) (lambda (color) (set! stroke-color color)))
+                     ((set-fill-color)   (lambda (color) (set! fill-color   color)))
+
+                     ((no-stroke) no-stroke)
+                     ((no-fill)   no-fill)
+
+                     ((set-stroke-width) (lambda (width) (set! stroke-width width)))
+
+                     ((point)
+                      (lambda (a)
+                        (activate-stroke-color)
+                        (glBegin GL_POINTS)
+                        (: a 'apply glVertex2d)
+                        (glEnd)))
+
+                     ((point*)
+                      (lambda (x y)
+                        (activate-stroke-color)
+                        (glBegin GL_POINTS)
+                        (glVertex2d x y)
+                        (glEnd)))
+
+                     ((line)
+                      (lambda (a b)
+                        (activate-stroke-color)
+                        (glBegin GL_LINES)
+                        ((-> a 'call-on-components) glVertex2d)
+                        ((-> b 'call-on-components) glVertex2d)
+                        (glEnd)))
+
+                     ((line*)
+                      (lambda (ax ay bx by)
+                        (activate-stroke-color)
+                        (glBegin GL_LINES)
+                        (glVertex2d ax ay)
+                        (glVertex2d bx by)
+                        (glEnd)))
+
+                     ((line-to)
+                      (lambda (b)
+                        (activate-stroke-color)
+                        (glBegin GL_LINES)
+                        ((-> pos 'call-on-components) glVertex2d)
+                        ((-> b   'call-on-components) glVertex2d)
+                        (glEnd)))
+
+                     ((ellipse) ellipse)
+
+                     ((circle)
+                      (lambda (size)
+                        (ellipse (vec size size))))
+
+                     ((circle*)
+                      (lambda (x y size)
+                        (set! pos (vec x y))
+                        (ellipse (vec size size))))
+
+                     ((rect) rect)
+                     
+                     ((rect*) rect*)
+
+                     ))))
+
+            (vector 'pen #f message-handler)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -224,6 +313,22 @@
     (glMatrixMode GL_PROJECTION)
     (glLoadIdentity)
     (glOrtho x-min x-max y-min y-max -10.0 10.0)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (background color)
+  (: color 'call-on-components glClearColor)
+  (glClear GL_COLOR_BUFFER_BIT))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define white (rgba 1.0 1.0 1.0 1.0))
+(define black (rgba 0.0 0.0 0.0 1.0))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (grey val alpha)
+  (rgba val val val alpha))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
