@@ -46,11 +46,11 @@
 
     (let ((activate-stroke-color
 	   (lambda ()
-	     ((-> stroke-color 'call-on-components) glColor4d)))
+	     ((-> stroke-color 'apply) glColor4d)))
 
 	  (activate-fill-color
 	   (lambda ()
-	     ((-> fill-color 'call-on-components) glColor4d)))
+	     ((-> fill-color 'apply) glColor4d)))
 
           (no-stroke
            (lambda ()
@@ -146,8 +146,8 @@
                       (lambda (a b)
                         (activate-stroke-color)
                         (glBegin GL_LINES)
-                        ((-> a 'call-on-components) glVertex2d)
-                        ((-> b 'call-on-components) glVertex2d)
+                        ((-> a 'apply) glVertex2d)
+                        ((-> b 'apply) glVertex2d)
                         (glEnd)))
 
                      ((line*)
@@ -162,8 +162,8 @@
                       (lambda (b)
                         (activate-stroke-color)
                         (glBegin GL_LINES)
-                        ((-> pos 'call-on-components) glVertex2d)
-                        ((-> b   'call-on-components) glVertex2d)
+                        ((-> pos 'apply) glVertex2d)
+                        ((-> b   'apply) glVertex2d)
                         (glEnd)))
 
                      ((ellipse) ellipse)
@@ -317,7 +317,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (background color)
-  (: color 'call-on-components glClearColor)
+  (: color 'apply glClearColor)
   (glClear GL_COLOR_BUFFER_BIT))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

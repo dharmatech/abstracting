@@ -12,10 +12,14 @@
 	     ((blue)  blue)
 	     ((alpha) alpha)
 
-	     ((call-on-components)
-	      (lambda (procedure)
+             ((apply)
+              (lambda (procedure)
 		(procedure red green blue alpha)))
 
+             ((clone)
+              (lambda ()
+                (rgba red green blue alpha)))
+              
 	     ((raw) (vector red green blue alpha))))))
 
     (vector 'rgba #f message-handler)))

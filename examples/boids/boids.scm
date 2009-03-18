@@ -170,8 +170,8 @@
   (let ((a (-> boid 'pos)))
     (let ((b (v+ a (v*n (normalize (-> boid 'vel)) 10))))
       (glBegin GL_LINES)
-      ((-> a 'call-on-components) glVertex2d)
-      ((-> b 'call-on-components) glVertex2d)
+      ((-> a 'apply) glVertex2d)
+      ((-> b 'apply) glVertex2d)
       (glEnd))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

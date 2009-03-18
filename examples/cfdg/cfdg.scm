@@ -133,12 +133,12 @@
 
        (set! circle
              (lambda ()
-               ((-> ((-> color 'rgba)) 'call-on-components) glColor4d)
+               ((-> ((-> color 'rgba)) 'apply) glColor4d)
                (glutSolidSphere 0.5 32 16)))
 
        (set! square
              (lambda ()
-               ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+               ((-> ((-> color 'rgba)) 'apply) gl-color)
                (glBegin GL_POLYGON)
                (glVertex2d -0.5  0.5)
                (glVertex2d  0.5  0.5)
@@ -148,7 +148,7 @@
 
        (set! triangle
              (lambda ()
-               ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+               ((-> ((-> color 'rgba)) 'apply) gl-color)
                (glBegin GL_POLYGON)
                (glVertex2d  0.0  0.577)
                (glVertex2d  0.5 -0.289)
@@ -211,7 +211,7 @@
                    (set! *display-list-generated* #t)
                    (glNewList display-list GL_COMPILE_AND_EXECUTE)
                    (set! color (hsva 0.0 0.0 0.0 1.0))
-                   ((-> ((-> color 'rgba)) 'call-on-components) gl-color)
+                   ((-> ((-> color 'rgba)) 'apply) gl-color)
                    (start-shape)
                    (glEndList))))
 
@@ -241,7 +241,7 @@
 
               (background)
 
-              ((-> ((-> color 'rgba)) 'call-on-components) gl-clear-color)
+              ((-> ((-> color 'rgba)) 'apply) gl-clear-color)
 
               (glClear GL_COLOR_BUFFER_BIT)
 
