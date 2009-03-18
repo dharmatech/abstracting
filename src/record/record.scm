@@ -31,18 +31,13 @@
                          (lambda (field)
                            (let ((i (index-of-field field)))
                              (lambda (val)
-                               (vector-set! data i val)))))
-
-                        (else ;; Treat message as field name; dynamic dispatch.
-
-                         (let ((i ((-> fields 'index) (eq-to? msg))))
-                           (if i (vector-ref data i) #f)))))))
+                               (vector-set! data i val)))))))))
 
                (vector tag data message-handler)))))
 
       (let ((new
              (lambda ()
-               (record-obj (make-vector (-> fields 'len) #f))))
+               (record-obj (make-vector (: fields 'len) #f))))
 
             (boa
              (lambda args
