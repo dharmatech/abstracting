@@ -1,4 +1,6 @@
 
+----------------------------------------------------------------------
+
 This software has only been tested on Linux.
 
 Everything works out of the box in Ypsilon Scheme.
@@ -101,3 +103,6 @@ mod-4 + 1        is switch-to-workspace 1
 mod-4 + 2        is switch-to-workspace 2
 mod-4 + 3        is switch-to-workspace 3
 mod-4 + 4        is switch-to-workspace 4
+
+dzen goes well with cons-wm.
+----------------------------------------------------------------------
