@@ -7,10 +7,15 @@
 
 	   (case msg
 
-	     ((red)   red)
-	     ((green) green)
-	     ((blue)  blue)
-	     ((alpha) alpha)
+	     ((red)   (lambda () red))
+	     ((green) (lambda () green))
+	     ((blue)  (lambda () blue))
+	     ((alpha) (lambda () alpha))
+
+             ((red!)   (lambda (new) (set! red    new)))
+             ((green!) (lambda (new) (set! green  new)))
+             ((blue!)  (lambda (new) (set! blue   new)))
+             ((alpha!) (lambda (new) (set! alpha  new)))
 
              ((apply)
               (lambda (procedure)
@@ -18,8 +23,6 @@
 
              ((clone)
               (lambda ()
-                (rgba red green blue alpha)))
+                (rgba red green blue alpha)))))))
               
-	     ((raw) (vector red green blue alpha))))))
-
     (vector 'rgba #f message-handler)))
