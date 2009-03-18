@@ -336,20 +336,22 @@
            ;;                  not-needed/int
            ;;                  not-needed/unsigned-int)
 
-           (let ((not-needed/window       (u32-vec 0))
-                 (not-needed/int          (s32-vec 0))
-                 (not-needed/unsigned-int (u32-vec 0))
-                 (x-return                (s32-vec 0))
-                 (y-return                (s32-vec 0)))
+           ;; (let ((not-needed/window       (u32-vec 0))
+           ;;       (not-needed/int          (s32-vec 0))
+           ;;       (not-needed/unsigned-int (u32-vec 0))
+           ;;       (x-return                (s32-vec 0))
+           ;;       (y-return                (s32-vec 0)))
 
-             (XQueryPointer dpy root
-                            (: not-needed/window 'ffi)
-                            (: not-needed/window 'ffi)
-                            (: x-return 'ffi)
-                            (: y-return 'ffi)
-                            (: not-needed/int 'ffi)
-                            (: not-needed/int 'ffi)
-                            (: not-needed/unsigned-int 'ffi))
+           ;;   (XQueryPointer dpy root
+           ;;                  (: not-needed/window 'ffi)
+           ;;                  (: not-needed/window 'ffi)
+           ;;                  (: x-return 'ffi)
+           ;;                  (: y-return 'ffi)
+           ;;                  (: not-needed/int 'ffi)
+           ;;                  (: not-needed/int 'ffi)
+           ;;                  (: not-needed/unsigned-int 'ffi))
+
+           (let ((root-x-y (x-query-pointer-root-x-y dpy root)))
 
              (if use-grab (XGrabServer dpy))
 
@@ -572,16 +574,14 @@
 ;; more config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define MODKEY Mod4Mask)
-
 (define keys
   (let ((key (-> key-record-template 'boa)))
     (vec
      
-     (key MODKEY XK_Return (lambda () (system "rxvt &")))
-     (key MODKEY XK_e      (lambda () (system "emacsclient -c &")))
-     (key MODKEY XK_w      (lambda () (system "seamonkey &")))
-     (key MODKEY XK_m      (lambda () (system "seamonkey -mail &")))
+     (key mod-key XK_Return (lambda () (system "rxvt &")))
+     (key mod-key XK_e      (lambda () (system "emacsclient -c &")))
+     (key mod-key XK_w      (lambda () (system "seamonkey &")))
+     (key mod-key XK_m      (lambda () (system "seamonkey -mail &")))
 
      (key mod-key XK_1 (lambda () (switch-to-workspace 1)))
      (key mod-key XK_2 (lambda () (switch-to-workspace 2)))
