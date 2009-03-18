@@ -1,27 +1,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+((-> loader 'lib) "srfi/1")
+
 ((-> loader 'lib) "glo")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (at-least min)
+  (lambda (n)
+    (max min n)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define *mouse-position* (vec 0.0 0.0))
 
 (define (passive-motion-func x y)
-  (set! *mouse-position* (vec (+ x 0.0) (+ y 0.0))))
+  (set! *mouse-position* (vec (inexact x) (inexact y))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define *length* 100)
+
 (define *points*
-  (circular-obj
-   ((-> (vec-of-len 100) 'map)
-    (lambda (elt)
-      (vec 0.0 0.0)))))
+  (apply circular-list
+         (map (lambda (x) (vec 0.0 0.0))
+              (make-list *length*))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (idle-func)
-  ((-> *points* 'suffix) *mouse-position*)
+  (set-car! *points* *mouse-position*)
+  (set! *points* (cdr *points*))
   (glutPostRedisplay))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -56,11 +66,23 @@
 
 	 (glClear GL_COLOR_BUFFER_BIT)
 
-	 ((-> *points* 'each-index)
-	  (lambda (i)
-	    (move-to ((-> *points* 'ref) i))
-	    (let ((fraction (/ i (: *points* 'len))))
-	      (circle (max (* fraction 25) 5.0)))))
+         (let loop ((i 0) (cell *points*))
+
+           (cond ((= i *length*)
+                  #t)
+
+                 (else
+
+                  (move-to (car cell))
+
+                  (let ((fraction (/ i *length*)))
+                    (let ((max-radius 25.0)
+                          (min-radius  5.0))
+                      (let ((radius ((at-least min-radius)
+                                     (* fraction max-radius))))
+                        (circle radius))))
+
+                  (loop (+ i 1) (cdr cell)))))
 
 	 (glutSwapBuffers))))))
 
@@ -70,3 +92,6 @@
 (glutIdleFunc          idle-func)
 
 (glutMainLoop)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
