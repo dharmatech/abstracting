@@ -27,11 +27,11 @@
   
 (define (call-random-weighted tbl)
 
-  (let ((weights ((-> tbl 'map) (lambda (ent) (-> ent 'first)))))
+  (let ((weights ((-> tbl 'map) (lambda (ent) (: ent 'first)))))
 
     (let ((i (random-weighted weights)))
 
-      (let ((procedure (-> ((-> tbl 'ref) i) 'second)))
+      (let ((procedure (: ((-> tbl 'ref) i) 'second)))
 
 	(procedure)))))
 

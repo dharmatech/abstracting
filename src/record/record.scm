@@ -7,65 +7,73 @@
 
 (define (record-template-obj tag fields)
 
-  (let ((index-of-field
-         (lambda (field)
-           ((-> fields 'index) (eq-to? field)))))
+  (let ((fields (if (list? fields)
+                    (vec-obj (list->vector fields))
+                    fields)))
 
-    (let ((record-obj
-           
-           (lambda (data)
+    (let ((index-of-field
+           (lambda (field)
+             ((-> fields 'index) (eq-to? field)))))
 
-             (let ((message-handler
+      (let ((record-obj
+             
+             (lambda (data)
 
-                    (lambda (msg)
+               (let ((message-handler
 
-                      (case msg
+                      (lambda (msg)
 
-                        ((getter)
-                         (lambda (field)
-                           (let ((i (index-of-field field)))
-                             (lambda ()
-                               (vector-ref data i)))))
+                        (case msg
 
-                        ((setter!)
-                         (lambda (field)
-                           (let ((i (index-of-field field)))
-                             (lambda (val)
-                               (vector-set! data i val)))))))))
+                          ((getter)
+                           (lambda (field)
+                             (let ((i (index-of-field field)))
+                               (lambda ()
+                                 (vector-ref data i)))))
 
-               (vector tag data message-handler)))))
+                          ((setter!)
+                           (lambda (field)
+                             (let ((i (index-of-field field)))
+                               (lambda (val)
+                                 (vector-set! data i val)))))
 
-      (let ((new
-             (lambda ()
-               (record-obj (make-vector (: fields 'len) #f))))
+                          ((apply)
+                           (lambda (procedure)
+                             (apply procedure (vector->list data))))))))
 
-            (boa
-             (lambda args
-               (record-obj (apply vector args)))))
+                 (vector tag data message-handler)))))
 
-        (let ((message-handler
+        (let ((new
+               (lambda ()
+                 (record-obj (make-vector (: fields 'len) #f))))
 
-               (lambda (msg)
+              (boa
+               (lambda args
+                 (record-obj (apply vector args)))))
 
-                 (case msg
+          (let ((message-handler
 
-                   ((new) new)
-                   ((boa) boa)
-                   ((make) #t)
+                 (lambda (msg)
 
-                   ((getter)
-                    (lambda (field)
-                      (let ((i (index-of-field field)))
-                        (lambda (obj)
-                          (vector-ref (vector-ref obj 1) i)))))
+                   (case msg
 
-                   ((setter!)
-                    (lambda (field)
-                      (let ((i (index-of-field field)))
-                        (lambda (obj val)
-                          (vector-set! (vector-ref obj 1) i val)))))))))
+                     ((new) new)
+                     ((boa) boa)
+                     ((make) #t)
 
-          (vector 'record-template (vector tag fields) message-handler))))))
+                     ((getter)
+                      (lambda (field)
+                        (let ((i (index-of-field field)))
+                          (lambda (obj)
+                            (vector-ref (vector-ref obj 1) i)))))
+
+                     ((setter!)
+                      (lambda (field)
+                        (let ((i (index-of-field field)))
+                          (lambda (obj val)
+                            (vector-set! (vector-ref obj 1) i val)))))))))
+
+            (vector 'record-template (vector tag fields) message-handler)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Experimental

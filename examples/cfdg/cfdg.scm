@@ -105,10 +105,10 @@
        ;; Install hue saturation brightness alpha
        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-       (let (($hue        (lambda () (-> color 'hue)))
-             ($saturation (lambda () (-> color 'saturation)))
-             ($value      (lambda () (-> color 'value)))
-             ($alpha      (lambda () (-> color 'alpha)))
+       (let (($hue        (lambda () (: color 'hue)))
+             ($saturation (lambda () (: color 'saturation)))
+             ($value      (lambda () (: color 'value)))
+             ($alpha      (lambda () (: color 'alpha)))
 
              (hue!        (lambda (new) ((-> color 'hue!)        new)))
              (saturation! (lambda (new) ((-> color 'saturation!) new)))
@@ -221,10 +221,10 @@
 
               (glLoadIdentity)
 
-              (let ((min-x  (-> viewport 'first))
-                    (width  (-> viewport 'second))
-                    (min-y  (-> viewport 'third))
-                    (height (-> viewport 'fourth)))
+              (let ((min-x  (: viewport 'first))
+                    (width  (: viewport 'second))
+                    (min-y  (: viewport 'third))
+                    (height (: viewport 'fourth)))
 
                 (let ((max-x (+ min-x width))
                       (max-y (+ min-y height)))

@@ -25,9 +25,9 @@
 
   (glPushMatrix)
 
-  (glTranslated (-> center 'first) (-> center 'second) 0.0)
+  (glTranslated (: center 'first) (: center 'second) 0.0)
 
-  (glScaled (-> dim 'first) (-> dim 'second) 1.0)
+  (glScaled (: dim 'first) (: dim 'second) 1.0)
 
   (glutSolidSphere 0.5 32 16)
 
@@ -210,12 +210,12 @@
 		 ((set-position)
 		  (lambda (pos)
 		    (set-current)
-		    (glutPositionWindow (-> pos 'first) (-> pos 'second))))
+		    (glutPositionWindow (: pos 'first) (: pos 'second))))
 
 		 ((set-size)
 		  (lambda (dim)
 		    (set-current)
-		    (glutReshapeWindow (-> dim 'first) (-> dim 'second))))
+		    (glutReshapeWindow (: dim 'first) (: dim 'second))))
 
 		 ((set-title)
 		  (lambda (title)

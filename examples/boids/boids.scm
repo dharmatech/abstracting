@@ -188,11 +188,11 @@
 
 (define (wrap pos dim)
 
-  (let ((x (-> pos 'first))
-        (y (-> pos 'second))
+  (let ((x (: pos 'first))
+        (y (: pos 'second))
 
-        (w (-> dim 'first))
-        (h (-> dim 'second)))
+        (w (: dim 'first))
+        (h (: dim 'second)))
 
     (vec (cond ((> x w) 0.0) ((< x 0.0) w) (else x))
          (cond ((> y h) 0.0) ((< y 0.0) h) (else y)))))
