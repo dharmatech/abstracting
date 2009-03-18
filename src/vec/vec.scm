@@ -77,7 +77,8 @@
 
 		   (case msg
 
-		     ((len) len)
+		     ((len) (lambda () len))
+                     
 		     ((ref) ref)
 		     ((set) set)
 		     
@@ -108,7 +109,7 @@
 		     ((copy)
 		      (lambda (new)
 			(let ((set (-> new 'set)))
-			  (for (min len (-> new 'len))
+			  (for (min len (: new 'len))
 			       (lambda (i)
 				 (set i (ref i)))))
 			new))
@@ -251,7 +252,7 @@
 
   (let ((start 0))
 
-    (let ((len (-> seq 'len))
+    (let ((len (: seq 'len))
 	  (seq-set (-> seq 'set)))
 
       (let ((message-handler

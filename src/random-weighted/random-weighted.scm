@@ -7,7 +7,7 @@
 
 (define (layers probabilities)
 
-  (let ((n (+ (-> probabilities 'len) 1)))
+  (let ((n (+ (: probabilities 'len) 1)))
 
     ((-> (-> ((-> (int-to-vec n) 'map)
 	      (lambda (num)

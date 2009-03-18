@@ -23,10 +23,10 @@
 	       ((suffix)
 		(lambda (elt)
 
-                  (if (>= size (-> underlying 'len))
+                  (if (>= size (: underlying 'len))
 		      (set! underlying
 		            ((-> underlying 'copy)
-		             (vec-of-len (* (-> underlying 'len) 2)))))
+		             (vec-of-len (* (: underlying 'len) 2)))))
 
 		  ((-> underlying 'set) size elt)
 		  (set! size (+ size 1))))

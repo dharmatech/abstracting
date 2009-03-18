@@ -45,7 +45,7 @@
 
   (let ((v (apply vec elts)))
 
-    (let ((bv (double-vector-of-len (-> v 'len))))
+    (let ((bv (double-vector-of-len (: v 'len))))
 
       (let ((ref  (-> v  'ref))
             (set! (-> bv 'set!)))

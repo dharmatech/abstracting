@@ -59,7 +59,7 @@
 	 ((-> *points* 'each-index)
 	  (lambda (i)
 	    (move-to ((-> *points* 'ref) i))
-	    (let ((fraction (/ i (-> *points* 'len))))
+	    (let ((fraction (/ i (: *points* 'len))))
 	      (circle (max (* fraction 25) 5.0)))))
 
 	 (glutSwapBuffers))))))
