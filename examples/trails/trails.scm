@@ -3,13 +3,9 @@
 
 ((-> loader 'lib) "srfi/1")
 
+((-> loader 'lib) "circular-list")
+
 ((-> loader 'lib) "glo")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (at-least min)
-  (lambda (n)
-    (max min n)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -23,9 +19,9 @@
 (define *length* 100)
 
 (define *points*
-  (apply circular-list
-         (map (lambda (x) (vec 0.0 0.0))
-              (make-list *length*))))
+  (circular-list-tabulate *length*
+                          (lambda (i)
+                            (vec 0.0 0.0))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -62,27 +58,14 @@
 
        (lambda ()
 
-	 (glClearColor 0.0 0.0 0.0 0.0)
+         (background black)
 
-	 (glClear GL_COLOR_BUFFER_BIT)
-
-         (let loop ((i 0) (cell *points*))
-
-           (cond ((= i *length*)
-                  #t)
-
-                 (else
-
-                  (move-to (car cell))
-
-                  (let ((fraction (/ i *length*)))
-                    (let ((max-radius 25.0)
-                          (min-radius  5.0))
-                      (let ((radius ((at-least min-radius)
-                                     (* fraction max-radius))))
-                        (circle radius))))
-
-                  (loop (+ i 1) (cdr cell)))))
+         (circular-list-each-index
+          (lambda (i point)
+            (move-to point)
+            (let ((fraction (/ i *length*)))
+              (circle (max 5.0 (* fraction 25.0)))))
+          *points*)
 
 	 (glutSwapBuffers))))))
 
