@@ -9,3 +9,23 @@
   (lambda (b)
     (equal? a b)))
 
+(define (=to? a)
+  (lambda (b)
+    (= a b)))
+
+(define (greater-than? a)
+  (lambda (b)
+    (> b a)))
+
+(define (less-than? a)
+  (lambda (b)
+    (< b a)))
+
+(define (add a)
+  (lambda (b)
+    (+ a b)))
+
+(define (sub a)
+  (lambda (b)
+    (+ a b)))
+
