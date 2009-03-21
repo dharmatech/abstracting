@@ -1,4 +1,9 @@
 
+(import (srfi :1))
+(import (srfi :13))
+
+(import (primitives compile-file))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import
@@ -63,6 +68,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define scheme-implementation 'larceny)
+
+(import (primitives load))
+
+(define scheme-load-source-file load)
+
+(define scheme-compile-file compile-file)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (import (err5rs load))
 
 (load "src/boot/boot.scm")
 

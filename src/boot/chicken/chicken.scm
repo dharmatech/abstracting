@@ -1,9 +1,14 @@
 
+(use srfi-1)
+(use srfi-13)
+
 (define scheme-implementation 'chicken)
 
 (use posix)
 
 (define mod modulo)
+
+;; (define scheme-load-source-file load)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -20,7 +25,7 @@
   
       (apply string-append
              (vector->list
-              (-> ((-> (-> loader 'roots) 'map)
+              (-> ((-> (: loader 'roots) 'map)
                    (lambda (dir)
                      (string-append " -include-path " dir " ")))
                   'raw)))
@@ -63,6 +68,8 @@
                         scheme-file)))
 
         (load scheme-file)))))
+
+(define scheme-load-source-file load)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
