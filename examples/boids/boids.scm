@@ -102,8 +102,8 @@
 (define (within-neighborhood? self other behaviour)
   (and
    (not (eq? self other))
-   (in-radius? self other (-> behaviour 'radius))
-   (in-view?   self other (-> behaviour 'view-angle))))
+   (in-radius? self other (get behaviour 'radius))
+   (in-view?   self other (get behaviour 'view-angle))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -118,26 +118,26 @@
   (v*n
    (normalize*
     (v- (average-position others)
-        (-> self 'pos)))
-   (-> behaviour 'weight)))
+        (get self 'pos)))
+   (get behaviour 'weight)))
 
 (define (alignment-force self others behaviour)
   (v*n
    (normalize*
     (average-velocity others))
-   (-> behaviour 'weight)))
+   (get behaviour 'weight)))
 
 (define (separation-force self others behaviour)
   (v*n
    (normalize*
-    (v- (-> self 'pos)
+    (v- (get self 'pos)
         (average-position others)))
-   (-> behaviour 'weight)))
+   (get behaviour 'weight)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (force* self others behaviour)
-  (case (-> behaviour 'type)
+  (case (get behaviour 'type)
     ((cohesion)   (cohesion-force   self others behaviour))
     ((alignment)  (alignment-force  self others behaviour))
     ((separation) (separation-force self others behaviour))))
@@ -167,8 +167,8 @@
 
 (define (draw-boid boid)
   (glColor4d 1.0 1.0 1.0 1.0)
-  (let ((a (-> boid 'pos)))
-    (let ((b (v+ a (v*n (normalize (-> boid 'vel)) 10))))
+  (let ((a (get boid 'pos)))
+    (let ((b (v+ a (v*n (normalize (get boid 'vel)) 10))))
       (glBegin GL_LINES)
       ((-> a 'apply) glVertex2d)
       ((-> b 'apply) glVertex2d)
@@ -212,8 +212,8 @@
 
              (let ((accel (vsum forces)))
 
-               (let ((pos (v+ (-> self 'pos) (v*n (-> self 'vel) time-slice)))
-                     (vel (v+ (-> self 'vel) (v*n accel          time-slice))))
+               (let ((pos (v+ (get self 'pos) (v*n (get self 'vel) time-slice)))
+                     (vel (v+ (get self 'vel) (v*n accel          time-slice))))
 
                  (let ((pos (wrap pos sky))
                        (vel (normalize* vel)))
