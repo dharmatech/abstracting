@@ -69,6 +69,26 @@ You'll also need these eggs which aren't at Eggs Unlimited:
 These currently install over the existing 'opengl' and 'glut' eggs if
 they are there so take care.
 ----------------------------------------------------------------------
+* GL on Gambit
+
+    cd support/gambit/gl
+
+    gsc \
+      -cc-options "-I/usr/X11R7/include" \
+      -ld-options "-L/usr/X11R7/lib -lGL" \
+      gl.scm
+
+----------------------------------------------------------------------
+* GLUT on Gambit
+
+    cd support/gambit/glut
+
+    gsc \
+      -cc-options "-I/usr/X11R7/include" \
+      -ld-options "-L/usr/X11R7/lib -lglut" \
+      glut.scm
+
+----------------------------------------------------------------------
 * xlib on Chicken
 
     cd support/chicken/xlib
