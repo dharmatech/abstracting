@@ -17,6 +17,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define compile-files? #f)
+
+(define (scheme-compiled-file name)
+  (pathname-replace-extension name "so"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define loader #f)
 
 (define (generate-include-path-options)
@@ -34,6 +41,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (scheme-compile-file file)
+  (system
+   (string-append "csc -dynamic "
+                  (generate-include-path-options)
+                  " -extend "
+                  (string-append abstracting-root-directory
+                                 "/src/boot/chicken/inc/inc.scm")
+                  " "
+                  file)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use files)
 (use posix)
 
@@ -44,30 +63,15 @@
      (file-change-time b)))
 
 (define (load scheme-file)
-
   (let ((so-file (pathname-replace-extension scheme-file "so")))
-
     (cond
-
      ((and (file-exists? so-file)
            (file-newer? so-file scheme-file))
       (chicken-scheme-load so-file))
-
      (else
-      (display "Compiling file: ") (display scheme-file) (newline)
-
-      (let ((include-path-options (generate-include-path-options)))
-
-        (system
-         (string-append "csc -dynamic "
-                        include-path-options
-                        " -extend "
-                        (string-append abstracting-root-directory
-                                       "/src/boot/chicken/inc/inc.scm")
-                        " "
-                        scheme-file)))
-
-        (load scheme-file)))))
+      (for-each display (list "Compiling file: " scheme-file "\n"))
+      (scheme-compile-file scheme-file)
+      (load scheme-file)))))
 
 (define scheme-load-source-file load)
 
@@ -124,3 +128,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (chicken-scheme-load "src/boot/boot.scm")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(print "Abstracting is loaded\n")

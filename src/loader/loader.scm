@@ -32,21 +32,32 @@
 
                        )
 
-                   (let ((source-file
+                   (let (
+                         (source-file
                           (lambda ()
                             (resolve-file relative-source-file)))
 
-                         (compiled-file
-                          (lambda ()
-                            (resolve-file relative-compiled-file))))
+                         ;; (compiled-file
+                         ;;  (lambda ()
+                         ;;    (resolve-file relative-compiled-file)))
+                         )
 
                      (let ((load-source
                             (lambda ()
                               (scheme-load-source-file (source-file))))
 
-                           (compile
+                           ;; (compile
+                           ;;  (lambda ()
+                           ;;    (scheme-compile-file (source-file))))
+
+                           (edit
                             (lambda ()
-                              (scheme-compile-file (source-file)))))
+                              (system
+                               (string-append
+                                "emacsclient --create-frame --no-wait "
+                                (source-file)))))
+                           
+                           )
 
                        (let ((use
                               (lambda ()
@@ -65,12 +76,15 @@
 
                                     ((load-source) load-source)
 
-                                    ((compile) compile)
+                                    ;; ((compile) compile)
 
                                     ((source-file)   source-file)
-                                    ((compiled-file) compiled-file)
+
+                                    ;; ((compiled-file) compiled-file)
 
                                     ((loaded?) loaded?)
+
+                                    ((edit) edit)
                                     
                                     ))))
 
@@ -99,10 +113,10 @@
 
                    ((get-lib) get-lib)
 
-                 ;; backwards compatability
-
-                 ((lib)
-                  (lambda (name)
-                    (: (get-lib name) 'use)))))))
+                   ;; backwards compatability
+                   
+                   ((lib)
+                    (lambda (name)
+                      (: (get-lib name) 'use)))))))
 
         (vector 'loader #f message-handler))))))

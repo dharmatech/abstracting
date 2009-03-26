@@ -89,7 +89,9 @@
 
       (vector 'f64-vec hv message-handler))))
 
-(define (f64-vec-of-len n) (make-f64vector n 0.0))
+;; (define (f64-vec-of-len n) (make-f64vector n 0.0))
+
+(define (f64-vec-of-len n) (f64-vec-obj (make-f64vector n 0.0)))
 
 (define (f64-vec . elts) (f64-vec-obj (apply f64vector elts)))
 

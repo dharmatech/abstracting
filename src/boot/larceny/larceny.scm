@@ -125,3 +125,7 @@
         (rnrs arithmetic bitwise))
 
 (import (primitives eval interaction-environment system))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(print "Abstracting is loaded\n")

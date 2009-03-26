@@ -7,7 +7,13 @@
 
   ((ikarus)  ((-> loader 'lib) "gl/ikarus"))
 
-  ((chicken) ((-> loader 'lib) "gl/chicken"))
+  ;; ((chicken) ((-> loader 'lib) "gl/chicken"))
 
-  )
+  ((chicken)
+   (chicken-scheme-load
+    (string-append abstracting-root-directory "/support/chicken/gl/gl.so")))
+
+  ((gambit)
+   (gambit-scheme-load
+    (string-append abstracting-root-directory "/support/gambit/gl/gl"))))
 

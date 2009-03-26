@@ -15,25 +15,43 @@
 
 ((-> loader 'lib) "double-vector")
 
+((-> loader 'lib) "hvec")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (define (get-modelview-matrix)
+;;   (let ((bv (make-bytevector (* 16 8))))
+;;     (glGetDoublev GL_MODELVIEW_MATRIX bv)
+;;     bv))
 
 (define (get-modelview-matrix)
-  (let ((bv (make-bytevector (* 16 8))))
-    (glGetDoublev GL_MODELVIEW_MATRIX bv)
-    bv))
+  (let ((hv (f64-vec-of-len 16)))
+    (glGetDoublev GL_MODELVIEW_MATRIX (: hv 'ffi))
+    hv))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (define (gl-flip angle)
+
+;;   (let ((angle (/ (* angle pi) 180)))
+
+;;     (let ((dv (double-vector (cos (* 2 angle))    (sin (* 2 angle))  0 0
+;;                              (sin (* 2 angle)) (- (cos (* 2 angle))) 0 0
+;;                              0                 0                     1 0
+;;                              0                 0                     0 1)))
+
+;;       (glMultMatrixd (-> dv 'raw)))))
 
 (define (gl-flip angle)
 
   (let ((angle (/ (* angle pi) 180)))
 
-    (let ((dv (double-vector (cos (* 2 angle))    (sin (* 2 angle))  0 0
-                             (sin (* 2 angle)) (- (cos (* 2 angle))) 0 0
-                             0                 0                     1 0
-                             0                 0                     0 1)))
+    (let ((hv (f64-vec (cos (* 2 angle))    (sin (* 2 angle))  0.0 0.0
+                       (sin (* 2 angle)) (- (cos (* 2 angle))) 0.0 0.0
+                       0.0                 0.0                 1.0 0.0
+                       0.0                 0.0                 0.0 1.0)))
 
-      (glMultMatrixd (-> dv 'raw)))))
+      (glMultMatrixd (: hv 'ffi)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -164,10 +182,15 @@
                 ((-> modelview-matrix-stack 'suffix)
                  (get-modelview-matrix))))
 
+             ;; (pop-modelview-matrix
+             ;;  (lambda ()
+             ;;    (let ((mat (-> modelview-matrix-stack 'pop)))
+             ;;      (glLoadMatrixd mat))))
+
              (pop-modelview-matrix
               (lambda ()
                 (let ((mat (-> modelview-matrix-stack 'pop)))
-                  (glLoadMatrixd mat))))
+                  (glLoadMatrixd (: mat 'ffi)))))
 
              (push-color
               (lambda ()
@@ -190,9 +213,17 @@
        ;; Install iterate?
        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+       ;; (set! iterate?
+       ;;       (lambda ()
+       ;;         (let ((ref (-> (double-vector-obj (get-modelview-matrix)) 'ref)))
+       ;;           (let ((size (apply max
+       ;;                              (map (lambda (i) (abs (ref i))) '(0 1 4 5)))))
+       ;;             ;; (display "iterate?: size is ") (display size) (newline)
+       ;;             (> size threshold)))))
+
        (set! iterate?
              (lambda ()
-               (let ((ref (-> (double-vector-obj (get-modelview-matrix)) 'ref)))
+               (let ((ref (-> (get-modelview-matrix) 'ref)))
                  (let ((size (apply max
                                     (map (lambda (i) (abs (ref i))) '(0 1 4 5)))))
                    ;; (display "iterate?: size is ") (display size) (newline)
