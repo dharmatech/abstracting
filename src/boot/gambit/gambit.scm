@@ -1,9 +1,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (include "~~/Gambit-C/lib/syntax-case.scm")
-
-(load "~~/Gambit-C/lib/syntax-case.scm")
+;; (load "~~/Gambit-C/lib/syntax-case.scm")
 
 (load "support/gambit/srfi-1/srfi-1")
 
@@ -108,6 +106,8 @@
 
 (define (compile-lib dir)
 
+  (print "Compiling " dir "\n")
+
   (let ((dir (resolve dir)))
 
     (let ((compiled-file (string-append dir "/source.o1")))
@@ -166,10 +166,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (load "src/boot/boot.scm")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
