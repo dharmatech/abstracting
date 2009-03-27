@@ -56,7 +56,11 @@ then
   csi src/boot/chicken/chicken.scm
 elif [ $scheme = gambit ]
 then
-  /usr/local/bin/gsc -e '(include "src/boot/gambit/gambit.scm")' -
+
+  /usr/local/Gambit-C/bin/gsc           \
+    -e '(load "~~lib/syntax-case.scm")' \
+    -e '(include "src/boot/gambit/gambit.scm")' -
+
 else
   exit
 fi
