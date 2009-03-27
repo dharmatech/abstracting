@@ -1,4 +1,5 @@
 ("math" "hvec" "srfi/27" "random-weighted" "gl" "glut" "gl/misc" "color/rgba"
   "color/hsva-record"
   "gro"
+  "lis"
 ) 

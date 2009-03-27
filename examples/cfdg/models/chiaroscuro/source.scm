@@ -1,24 +1,4 @@
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(random-source-randomize! default-random-source)
-
-(glutInit (vector 0) (vector ""))
-
-(glutInitDisplayMode GLUT_RGBA)
-
-(glutInitWindowPosition 100 100)
-(glutInitWindowSize 500 500)
-
-(glutCreateWindow "CFDG")
-
-(glutReshapeFunc
- (lambda (w h)
-   (glEnable GL_BLEND)
-   (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
-   (glViewport 0 0 w h)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (black)
@@ -84,6 +64,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(install-display-func)
-
-(glutMainLoop)
+(run-model)

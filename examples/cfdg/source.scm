@@ -21,11 +21,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (change record field procedure)
-  (set record field (procedure (get record field))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (define *background*  #f)
 (define *threshold*   #f)
 (define *viewport*    #f)
@@ -92,22 +87,20 @@
 
   (let ((push-modelview-matrix
          (lambda ()
-           ((-> *modelview-matrix-stack* 'suffix)
-            (get-modelview-matrix))))
+           (: *modelview-matrix-stack* 'push! (get-modelview-matrix))))
 
         (pop-modelview-matrix
          (lambda ()
-           (let ((mat (-> *modelview-matrix-stack* 'pop)))
+           (let ((mat (: *modelview-matrix-stack* 'pop!)))
              (glLoadMatrixd (: mat 'ffi)))))
 
         (push-color
          (lambda ()
-           ((-> *color-stack* 'suffix)
-            (: *color* 'apply hsva))))
+           (: *color-stack* 'push! (: *color* 'clone))))
 
         (pop-color
          (lambda ()
-           (set! *color* (-> *color-stack* 'pop)))))
+           (set! *color* (: *color-stack* 'pop!)))))
 
     (lambda (procedure)
       (push-modelview-matrix)
@@ -139,10 +132,7 @@
               (set! *display-list-generated* #t)
               (glNewList display-list GL_COMPILE_AND_EXECUTE)
               (set! *color* (hsva 0.0 0.0 0.0 1.0))
-              ;; ((-> ((-> *color* 'rgba)) 'apply) gl-color)
-
               (: (hsva->rgba *color*) 'apply glColor4d)
-              
               (*start-shape*)
               (glEndList))))
 
@@ -172,24 +162,47 @@
 
          (*background*)
 
-         ;; ((-> ((-> *color* 'rgba)) 'apply) gl-clear-color)
-         
          (: (hsva->rgba *color*) 'apply gl-clear-color)
          
          (glClear GL_COLOR_BUFFER_BIT)
 
          ;; Initialize modelview matrix stack
 
-         (set! *modelview-matrix-stack* (gro-obj 100))
+         (set! *modelview-matrix-stack* (lis))
 
          ;; Initialize color stack
 
-         (set! *color-stack* (gro-obj 100))
+         (set! *color-stack* (lis))
 
          (if *display-list-generated*
              (glCallList display-list)
              
              (time (build-display-list))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (run-model)
+
+  (random-source-randomize! default-random-source)
+
+  (glutInit (vector 0) (vector ""))
+
+  (glutInitDisplayMode GLUT_RGBA)
+
+  (glutInitWindowPosition 100 100)
+  (glutInitWindowSize 500 500)
+
+  (glutCreateWindow "CFDG")
+
+  (glutReshapeFunc
+   (lambda (w h)
+     (glEnable GL_BLEND)
+     (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
+     (glViewport 0 0 w h)))
+
+  (install-display-func)
+
+  (glutMainLoop))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
