@@ -7,11 +7,12 @@ Everything works out of the box in Ypsilon Scheme.
 
 Other Scheme's have specific instructions below.
 
-The implementation versions that should be used:
+The implementation versions that have been tested:
 
     Ypsilon (svn)
     Larceny (svn)
     Chicken (3.4.0)
+    Gambit  (4.4.1 4.4.2)
 
 ----------------------------------------------------------------------
 * Install
@@ -20,7 +21,7 @@ To install, edit the file 'abstracting' and change the line:
 
     cd /root/abstracting
 
-to point to the actuall abstracting directory on your system.
+to point to the actual abstracting directory on your system.
 ----------------------------------------------------------------------
 * Quick start
 
@@ -29,20 +30,47 @@ Run one of:
     abstracting --ypsilon
     abstracting --larceny
     abstracting --chicken
+    abstracting --gambit
 
 At the Scheme prompt, try some demos:
 
-    ((-> loader 'lib) "golden-section")
+    (require-lib "golden-section")
 
-    ((-> loader 'lib) "trails")
+    (require-lib "trails")
 
-    ((-> loader 'lib) "boids")
+    (require-lib "sine-console")
 
-    ((-> loader 'lib) "cfdg/models/chiaroscuro")
+    (require-lib "cfdg/models/chiaroscuro")
 
-    ((-> loader 'lib) "cfdg/models/spirales")
+    (require-lib "cfdg/models/spirales")
 
-    ((-> loader 'lib) "cfdg/models/game1-turn6")
+    (require-lib "cfdg/models/game1-turn6")
+----------------------------------------------------------------------
+* Setup on Gambit
+
+** Path to gsc
+
+If needed, edit the path to 'gsc' in the abstracting file:
+
+    /usr/local/Gambit-C/bin/gsc
+
+** Compile SRFI-1
+
+    gsc support/gambit/srfi-1/srfi-1.scm
+
+** Compile GL
+
+    /usr/local/Gambit-C/bin/gsc           \
+      -cc-options "-I/usr/X11R7/include"  \
+      -ld-options "-L/usr/X11R7/lib -lGL" \
+      support/gambit/gl/gl.scm
+
+** Compile GLUT
+
+    /usr/local/Gambit-C/bin/gsc             \
+      -cc-options "-I/usr/X11R7/include"    \
+      -ld-options "-L/usr/X11R7/lib -lglut" \
+      support/gambit/glut/glut.scm
 
 ----------------------------------------------------------------------
 * OpenGL on Larceny
@@ -53,48 +81,27 @@ On Larceny, you'll need to install these libraries:
 
     http://proteus.freeshell.org/glut.sls
 ----------------------------------------------------------------------
-* OpenGL on Chicken
+* Chicken Eggs
 
 On Chicken, you'll need to install these standard eggs:
 
     vector-lib
     srfi-27
-
-You'll also need these eggs which aren't at Eggs Unlimited:
-
-    http://proteus.freeshell.org/c-style-opengl.egg
-
-    http://proteus.freeshell.org/c-style-glut.egg
-
-These currently install over the existing 'opengl' and 'glut' eggs if
-they are there so take care.
+    syntax-case
 ----------------------------------------------------------------------
-* GL on Gambit
+* OpenGL on Chicken
 
-    cd support/gambit/gl
+    cd support/chicken/glut
+    csc glut.scm -dynamic -I/usr/X11R7/include -L/usr/X11R7/lib -lglut
 
-    gsc \
-      -cc-options "-I/usr/X11R7/include" \
-      -ld-options "-L/usr/X11R7/lib -lGL" \
-      gl.scm
-
-----------------------------------------------------------------------
-* GLUT on Gambit
-
-    cd support/gambit/glut
-
-    gsc \
-      -cc-options "-I/usr/X11R7/include" \
-      -ld-options "-L/usr/X11R7/lib -lglut" \
-      glut.scm
-
+    cd support/chicken/gl
+    csc gl.scm -dynamic -I/usr/X11R7/include -L/usr/X11R7/lib -lGL
 ----------------------------------------------------------------------
 * xlib on Chicken
 
     cd support/chicken/xlib
 
     csc xlib.scm -dynamic -L/usr/X11R7/lib -lX11 -I/usr/X11R7/include
-
 ----------------------------------------------------------------------
 * xlib on Larceny
 
