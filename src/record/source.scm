@@ -11,33 +11,41 @@
            (lambda (field)
              ((-> fields 'index) (eq-to? field)))))
 
-      (let ((record-obj
+      (letrec ((record-obj
              
-             (lambda (data)
+                (lambda (data)
 
-               (let ((message-handler
+                  (let ((message-handler
 
-                      (lambda (msg)
+                         (lambda (msg)
 
-                        (case msg
+                           (case msg
 
-                          ((getter)
-                           (lambda (field)
-                             (let ((i (index-of-field field)))
-                               (lambda ()
-                                 (vector-ref data i)))))
+                             ((getter)
+                              (lambda (field)
+                                (let ((i (index-of-field field)))
+                                  (lambda ()
+                                    (vector-ref data i)))))
 
-                          ((setter!)
-                           (lambda (field)
-                             (let ((i (index-of-field field)))
-                               (lambda (val)
-                                 (vector-set! data i val)))))
+                             ((setter!)
+                              (lambda (field)
+                                (let ((i (index-of-field field)))
+                                  (lambda (val)
+                                    (vector-set! data i val)))))
 
-                          ((apply)
-                           (lambda (procedure)
-                             (apply procedure (vector->list data))))))))
+                             ((apply)
+                              (lambda (procedure)
+                                (apply procedure (vector->list data))))
 
-                 (vector tag data message-handler)))))
+                             ((clone)
+                              (lambda ()
+                                (record-obj
+                                 (list->vector
+                                  (vector->list data)))))
+
+                             ))))
+
+                    (vector tag data message-handler)))))
 
         (let ((new
                (lambda ()
@@ -82,6 +90,11 @@
 
 (define (get obj field)     (((-> obj 'getter)  field)))
 (define (set obj field val) (((-> obj 'setter!) field) val))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (change record field procedure)
+  (set record field (procedure (get record field))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
