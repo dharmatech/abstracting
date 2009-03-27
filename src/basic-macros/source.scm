@@ -17,3 +17,21 @@
   (syntax-rules ()
     ((push! list elt)
      (set! list (cons elt list)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-syntax list-push!
+  (syntax-rules ()
+    ((list-push! list elt)
+     (set! list (cons elt list)))))
+
+(define-syntax list-pop!
+  (syntax-rules ()
+    ((list-pop! list)
+     (let ((elt (car list)))
+       (set! list (cdr list))
+       elt))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
