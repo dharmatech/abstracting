@@ -78,6 +78,8 @@
 
 (define exact->inexact inexact)
 
+(import (primitives modulo))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import (primitives time))
