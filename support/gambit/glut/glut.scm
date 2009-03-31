@@ -40,8 +40,18 @@ declare-end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (glutInit argc argv)
-  ((c-lambda () void "int argc = 0 ; glutInit ( &argc , NULL ) ;")))
+;; (define (glutInit argc argv)
+;;   ((c-lambda () void "int argc = 0 ; glutInit ( &argc , NULL ) ;")))
+
+(c-declare " int argc = 0 ; ")
+
+(define (glutInit a b)
+
+  (let ((argc ((c-lambda () (pointer int) " ___result_voidstar = &argc ; "))))
+
+    (let ((proc (c-lambda ( int*  nonnull-char-string-list ) void "glutInit")))
+
+      (proc argc '()))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -101,7 +111,26 @@ declare-end
 ;; /*
 ;;  * Menu see freeglut_menu.c
 ;;  */
-(define glutCreateMenu (c-lambda ( (function (int) void) ) int "glutCreateMenu"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (define glutCreateMenu (c-lambda ( (function (int) void) ) int "glutCreateMenu"))
+
+(define *glut-create-menu-func* #f)
+
+(c-define (basic-create-menu-func a)
+          (int)
+          void
+          "basicCreateMenuFunc"
+          ""
+          (*glut-create-menu-func* a))
+
+(define (glutCreateMenu proc)
+  (set! *glut-create-menu-func* proc)
+  ((c-lambda () void " glutCreateMenu ( basicCreateMenuFunc ) ; ")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define glutDestroyMenu (c-lambda ( int ) void "glutDestroyMenu"))
 (define glutGetMenu (c-lambda ( ) int "glutGetMenu"))
 (define glutSetMenu (c-lambda ( int ) void "glutSetMenu"))
@@ -148,12 +177,12 @@ declare-end
 
 (define *glut-keyboard-func* #f)
 
-(c-define (basic-keyboard-func a b)
+(c-define (basic-keyboard-func a b c)
           (unsigned-char int int)
           void
           "basicKeyboardFunc"
           ""
-          (*glut-keyboard-func* a b))
+          (*glut-keyboard-func* a b c))
 
 (define (glutKeyboardFunc proc)
   (set! *glut-keyboard-func* proc)
@@ -161,7 +190,20 @@ declare-end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define glutSpecialFunc (c-lambda ( (function (int int int) void) ) void "glutSpecialFunc"))
+;; (define glutSpecialFunc (c-lambda ( (function (int int int) void) ) void "glutSpecialFunc"))
+
+(define *glut-special-func* #f)
+
+(c-define (basic-special-func a b c)
+          (int int int)
+          void
+          "basicSpecialFunc"
+          ""
+          (*glut-special-func* a b c))
+
+(define (glutSpecialFunc proc)
+  (set! *glut-special-func* proc)
+  ((c-lambda () void " glutSpecialFunc ( basicSpecialFunc ) ; ")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
