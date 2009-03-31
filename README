@@ -1,7 +1,7 @@
 
 ----------------------------------------------------------------------
 
-This software has only been tested on Linux.
+This software has mainly been tested on Linux.
 
 Everything works out of the box in Ypsilon Scheme.
 
@@ -48,6 +48,16 @@ At the Scheme prompt, try some demos:
 
     (require-lib "cfdg/models/game1-turn6")
 ----------------------------------------------------------------------
+* Setup on Larceny
+
+    $ larceny -err5rs
+
+    > (import (larceny compiler))
+
+    > (compile-library "support/larceny/gl.sls")
+
+    > (compile-library "support/larceny/glut.sls")
+----------------------------------------------------------------------
 * Setup on Gambit
 
 ** Path to gsc
@@ -73,15 +83,6 @@ If needed, edit the path to 'gsc' in the abstracting file:
       -cc-options "-I/usr/X11R7/include"    \
       -ld-options "-L/usr/X11R7/lib -lglut" \
       support/gambit/glut/glut.scm
-
-----------------------------------------------------------------------
-* OpenGL on Larceny
-
-On Larceny, you'll need to install these libraries:
-
-    http://proteus.freeshell.org/gl.sls
-
-    http://proteus.freeshell.org/glut.sls
 ----------------------------------------------------------------------
 * Chicken Eggs
 
@@ -141,4 +142,13 @@ mod-4 + 3        is switch-to-workspace 3
 mod-4 + 4        is switch-to-workspace 4
 
 dzen goes well with cons-wm.
+----------------------------------------------------------------------
+* KNOWN BUGS
+
+Calling glutInit on Mac Gambit triggers a bus error.
+
+If you are a Mac, Gambit, or glut expert, see this file to investigate
+the problem:
+
+   support/gambit/glut/glut.scm
 ----------------------------------------------------------------------
