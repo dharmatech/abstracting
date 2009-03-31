@@ -34,6 +34,8 @@ Run one of:
 
 At the Scheme prompt, try some demos:
 
+    (require-lib "boids")
+
     (require-lib "golden-section")
 
     (require-lib "trails")
@@ -96,6 +98,13 @@ On Chicken, you'll need to install these standard eggs:
 
     cd support/chicken/gl
     csc gl.scm -dynamic -I/usr/X11R7/include -L/usr/X11R7/lib -lGL
+----------------------------------------------------------------------
+* xlib
+
+The xlib support mentioned below is not needed for OpenGL. Feel free
+to skip these steps if you are only interested in the OpenGL
+support. The xlib support is experimental and is for folks interested
+in xlib hacking in Scheme.
 ----------------------------------------------------------------------
 * xlib on Chicken
 
