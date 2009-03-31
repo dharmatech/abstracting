@@ -221,14 +221,21 @@
 		         (lambda (elt)
 		           (/ elt n)))))
 
-                     
-			 
+                     ;;
 
+                     ((reduce)
+                      (lambda (f ridentity)
+                        (let ((accum ridentity))
+                          (each
+                           (lambda (elt)
+                             (set! accum (f accum elt))))
+                          accum)))
+                     
 		     ((rest) (tail 1))
 
                      ;;
 
-                     ((empty?) (= len 0))
+                     ((empty?) (lambda () (= len 0)))
 
 		     ;;
 
