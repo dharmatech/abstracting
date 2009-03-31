@@ -9,10 +9,10 @@ Other Scheme's have specific instructions below.
 
 The implementation versions that have been tested:
 
-    Ypsilon (svn)
-    Larceny (svn)
-    Chicken (3.4.0)
-    Gambit  (4.4.1 4.4.2)
+    Ypsilon (svn)         Linux Mac
+    Larceny (svn)         Linux
+    Chicken (3.4.0)       Linux
+    Gambit  (4.4.1 4.4.2) Linux
 
 ----------------------------------------------------------------------
 * Install
