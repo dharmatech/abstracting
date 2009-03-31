@@ -29,6 +29,14 @@
          (lambda (procedure)
            (apply procedure l)))
 
+        (fold
+         (lambda (kons knil)
+           (fold kons knil l)))
+
+        (reduce
+         (lambda (f ridentity)
+           (reduce f ridentity l)))
+
         )
 
     (let ((message-handler
@@ -38,7 +46,7 @@
              (case msg
 
                ((map) (lambda (procedure)
-                        (map procedure l)))
+                        (lis-obj (map procedure l))))
 
                ((each)
                 (lambda (procedure)
@@ -55,6 +63,10 @@
                ;; ((cdr!) cdr!)
 
                ((apply) apply)
+
+               ((fold) fold)
+
+               ((reduce) reduce)
 
                (else (lambda args (error "does not understand message")))))))
 
