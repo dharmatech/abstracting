@@ -278,4 +278,4 @@
    (iterate-system)
    (glutPostRedisplay)))
 
-;; (glutMainLoop)
+(glutMainLoop)
