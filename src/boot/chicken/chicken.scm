@@ -224,6 +224,16 @@
 
 (define mod modulo)
 
+;; (define fl+ fp+)
+;; (define fl- fp-)
+;; (define fl* fp*)
+;; (define fl/ fp/)
+
+(define fl+ +)
+(define fl- -)
+(define fl* *)
+(define fl/ /)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (print "Abstracting is loaded")
