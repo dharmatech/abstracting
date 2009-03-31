@@ -1,1 +1,10 @@
-("math" "gl" "glut" "srfi/27" "gro" "math/vector" "record")
+("obj"
+ "vec"
+ "lis"
+ "srfi/27"
+ "math"
+ "combinators"
+ "gl"
+ "glut"
+ "boids/pt-lib")
+
