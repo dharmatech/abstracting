@@ -101,26 +101,3 @@ On Chicken, you'll need to install these standard eggs:
     cd support/chicken/gl
     csc gl.scm -dynamic -I/usr/X11R7/include -L/usr/X11R7/lib -lGL
 ----------------------------------------------------------------------
-* xlib
-
-The xlib support mentioned below is not needed for OpenGL. Feel free
-to skip these steps if you are only interested in the OpenGL
-support. The xlib support is experimental and is for folks interested
-in xlib hacking in Scheme.
-----------------------------------------------------------------------
-* xlib on Chicken
-
-    cd support/chicken/xlib
-
-    csc xlib.scm -dynamic -L/usr/X11R7/lib -lX11 -I/usr/X11R7/include
-----------------------------------------------------------------------
-* xlib on Larceny
-
-    $ larceny
-
-    > (load "support/larceny/xlib/xlib.sch")
-
-    > (compile-file "support/larceny/xlib/xlib.sch")
-
-Both of those steps take a while.
-----------------------------------------------------------------------
