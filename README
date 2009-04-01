@@ -88,9 +88,10 @@ If needed, edit the path to 'gsc' in the abstracting file:
 
 On Chicken, you'll need to install these standard eggs:
 
+    easyffi
+    syntax-case
     vector-lib
     srfi-27
-    syntax-case
 ----------------------------------------------------------------------
 * OpenGL on Chicken
 
