@@ -47,6 +47,9 @@ At the Scheme prompt, try some demos:
     (require-lib "cfdg/models/spirales")
 
     (require-lib "cfdg/models/game1-turn6")
+
+    (require-lib "springies/models/ball")
+
 ----------------------------------------------------------------------
 * Setup on Larceny
 
