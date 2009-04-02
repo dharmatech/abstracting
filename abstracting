@@ -50,7 +50,8 @@ then
   cat src/boot/larceny/larceny.scm - | larceny -path support/larceny -err5rs
 elif [ $scheme = ikarus ]
 then
-  cat src/boot/ikarus/ikarus.scm - | ikarus
+  # cat src/boot/ikarus/ikarus.scm - | ikarus
+  ikarus src/boot/ikarus/ikarus.scm
 elif [ $scheme = chicken ]
 then
   csi src/boot/chicken/chicken.scm
