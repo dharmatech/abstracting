@@ -3,13 +3,17 @@
 
 This software has mainly been tested on Linux.
 
-Everything works out of the box in Ypsilon Scheme.
+Everything works out of the box on these implementations:
+
+    Ypsilon
+    Ikarus
 
 Other Scheme's have specific instructions below.
 
 The implementation versions that have been tested:
 
     Ypsilon (svn)         Linux Mac
+    Ikarus  (0.0.4-rc1+)  Linux
     Larceny (svn)         Linux
     Chicken (3.4.0)       Linux
     Gambit  (4.4.1 4.4.2) Linux
@@ -28,6 +32,7 @@ to point to the actual abstracting directory on your system.
 Run one of:
 
     abstracting --ypsilon
+    abstracting --ikarus
     abstracting --larceny
     abstracting --chicken
     abstracting --gambit
