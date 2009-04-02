@@ -266,7 +266,9 @@
   (set! image-height height)
   (set! image-width width)
   
-  (glutInit (vector) (vector))
+  ;; (glutInit (vector) (vector))
+
+  (glutInit (vector 0) (vector ""))
   
   (glutInitDisplayMode (bitwise-ior GLUT_DOUBLE GLUT_RGB))
   (glutInitWindowSize image-width image-height)
