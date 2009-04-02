@@ -115,7 +115,9 @@
   (let ((ref (-> (get-modelview-matrix) 'ref)))
     (let ((size (apply max
                        (map (lambda (i) (abs (ref i))) '(0 1 4 5)))))
-      (> size *threshold*))))
+      ;; (print "iterate? size is " size " *threshold* is " *threshold* "\n")
+      (> size *threshold*)
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
