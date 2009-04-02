@@ -241,6 +241,40 @@
 
 		     ((raw) v)
 
+                     ;; Resizable support. Experimental.
+                     
+                     ;; Alt names: (set-fill!) (push-fill!)
+                     
+                     ((set-len!) (lambda (new) (set! len new)))
+
+                     ((push!)
+                      (lambda (elt)
+                        (set len elt)
+                        (set! len (+ len 1))))
+
+                     ((filter-into-vec!)
+                      (lambda (f u)
+                        (let ((push! (-> u 'push!)))
+                          (each
+                           (lambda (elt)
+                             (if (f elt)
+                                 (push! elt)))))))
+
+                     ;;
+
+                     ((filter-to-list)
+                      (lambda (pred)
+
+                        (let loop ((i 0))
+
+                          (cond ((= i len) '())
+
+                                ((pred (ref i))
+                                 (cons (ref i)
+                                       (loop (+ i 1))))
+
+                                (else (loop (+ i 1)))))))
+                     
 		     ))))
 
 	  (vector 'vec v message-handler)))))))
