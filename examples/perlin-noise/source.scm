@@ -57,8 +57,28 @@
 ;; the gradient values are all cached in a table and it is ensured
 ;; that each harmonics have different gradient values.
 
+;; (define (gradient-hash obj)
+;;   (exact
+;;    (+ (list-ref obj 0)
+;;       (list-ref obj 1)
+;;       (list-ref obj 2))))
+
+(define gradient-hash equal-hash)
+
+;; (define get-random-gradient
+;;   (let ((cache (make-hashtable equal-hash equal?)))
+;;     (lambda (harm x y)
+;;       (let* ((key (list harm x y))
+;;              (cache-val (hashtable-ref cache key #f)))
+;;         (if cache-val
+;;             cache-val
+;;             (let* ((grad-angle (* 2 pi (random-real)))
+;;                    (grad (create-point2d (cos grad-angle) (sin grad-angle))))
+;;               (hashtable-set! cache key grad)
+;;               grad))))))
+
 (define get-random-gradient
-  (let ((cache (make-hashtable equal-hash equal?)))
+  (let ((cache (make-hashtable gradient-hash equal?)))
     (lambda (harm x y)
       (let* ((key (list harm x y))
              (cache-val (hashtable-ref cache key #f)))
@@ -158,7 +178,9 @@
 
 ;; (define perlin-cache (make-table))
 
-(define perlin-cache (make-hashtable equal-hash equal?))
+;; (define perlin-cache (make-hashtable equal-hash equal?))
+
+(define perlin-cache (make-hashtable gradient-hash equal?))
 
 ;; Another cache level is used to save the noise values for a static
 ;; interpolation function and harmonic level pair. This is used to
@@ -178,7 +200,12 @@
                               perlin-cache-interpolation-fun)))
                 (begin (set! perlin-cache-harm-level harm-limit)
                        (set! perlin-cache-interpolation-fun interpolation-fun)
-                       (set! perlin-cache (make-hashtable equal-hash equal?))))
+
+                       ;; (set! perlin-cache (make-hashtable equal-hash equal?))
+
+                       (set! perlin-cache (make-hashtable gradient-hash equal?))
+
+                       ))
             (let ((perlin-noise-val
                    (perlin-noise x y harm-limit
                                  width height interpolation-fun)))
