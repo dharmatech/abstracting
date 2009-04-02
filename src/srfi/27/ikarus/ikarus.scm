@@ -1,2 +1,0 @@
-
-(define random-integer random)
