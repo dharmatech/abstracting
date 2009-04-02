@@ -228,6 +228,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(random-source-randomize! default-random-source)
+
 (set! boids (random-boids 50))
 
 (set! time-slice 10.0)
