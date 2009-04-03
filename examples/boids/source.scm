@@ -135,11 +135,22 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define sky (pt 500.0 500.0))
+
+;; (define (random-boids count)
+;;   (: (vec-of-len count) 'map
+;;      (lambda (elt)
+;;        (boid (pt (inexact (random-integer 500))
+;;                  (inexact (random-integer 500)))
+;;              (ensure-non-zero
+;;               (pt (inexact (+ -10 (random-integer 20)))
+;;                   (inexact (+ -10 (random-integer 20)))))))))
+
 (define (random-boids count)
   (: (vec-of-len count) 'map
      (lambda (elt)
-       (boid (pt (inexact (random-integer 500))
-                 (inexact (random-integer 500)))
+       (boid (pt (inexact (random-integer (exact (x sky))))
+                 (inexact (random-integer (exact (y sky)))))
              (ensure-non-zero
               (pt (inexact (+ -10 (random-integer 20)))
                   (inexact (+ -10 (random-integer 20)))))))))
@@ -178,8 +189,6 @@
     (glPopMatrix)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define sky (pt 500.0 500.0))
 
 (define boids #f)
 
@@ -230,7 +239,7 @@
 
 (random-source-randomize! default-random-source)
 
-(set! boids (random-boids 50))
+(set! boids (random-boids 100))
 
 (set! time-slice 10.0)
 
@@ -252,6 +261,9 @@
 
 (glutReshapeFunc
  (lambda (w h)
+
+   (set! sky (pt (inexact w) (inexact h)))
+   
    (glEnable GL_BLEND)
    (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
    (glViewport 0 0 w h)
@@ -279,5 +291,37 @@
  (lambda ()
    (iterate-system)
    (glutPostRedisplay)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(glutKeyboardFunc
+ (lambda (key x y)
+
+   (let ((key (if (char? key) key (integer->char key))))
+
+     (case key
+
+       ((#\1) (set! boids (random-boids (: boids 'len))))
+
+       ((#\2)
+        (let ((n (- (: boids 'len) 10)))
+          (if (> n 0)
+              (set! boids (: boids 'subseq 0 n))))
+        (print "Number of boids: " (: boids 'len) "\n"))
+
+       ((#\3)
+        (set! boids (: boids 'append (random-boids 10)))
+        (print "Number of boids: " (: boids 'len) "\n"))
+        
+       (else 'ok)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(print "Boids menu:"      "\n"
+       "1 - Randomize"    "\n"
+       "2 - Sub 10 boids" "\n"
+       "3 - Add 10 boids" "\n")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (glutMainLoop)
