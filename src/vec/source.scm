@@ -274,6 +274,13 @@
                                        (loop (+ i 1))))
 
                                 (else (loop (+ i 1)))))))
+
+                     ((append)
+                      (lambda (other)
+                        (vec-obj
+                         (list->vector
+                          (append (vector->list v)
+                                  (vector->list (vector-ref other 1)))))))
                      
 		     ))))
 
