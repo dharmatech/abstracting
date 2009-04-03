@@ -8,8 +8,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (print . elts)
-  (for-each display elts)
-  (newline))
+  (for-each display elts))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -64,7 +63,7 @@
 
 (define (require-lib dir)
   (cond ((not (member dir *loaded*))
-         (print "Loading lib " dir)
+         (print "Loading lib " dir "\n")
          (load-lib dir)
          (set! *loaded* (cons dir *loaded*)))))
 
@@ -78,4 +77,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(print "Abstracting is loaded")
+(print "Abstracting is loaded\n")
