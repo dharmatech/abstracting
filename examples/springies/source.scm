@@ -1,17 +1,22 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (vector-nth i) (cut vector-ref <> i))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (scalar-projection a b)
   (/ (dot a b)
      (norm b)))
-
-;; (define scalar-projection (bi2 dot (nip norm) /))
 
 (define (vector-projection a b)
   (pt*n (normalize b)
         (scalar-projection a b)))
 
-;; (define vector-projection (bi2 (nip normalize) scalar-projection v*n))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (pt-sum-4 a b c d)
+  (pt+ (pt+ (pt+ a b) c) d))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -22,55 +27,181 @@
 
 (define *gravity* #t)
 
-;; (define *world-size* #f)
-
-;; (define (world-width)  (vector-ref *world-size* 0))
-;; (define (world-height) (vector-ref *world-size* 1))
-
 (define *world-width*  #f)
 (define *world-height* #f)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; node
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (make-node pos vel mass elas force)
-  (vector 'node pos vel mass elas force))
-
-(define pos   (vector-nth 1))
-(define vel   (vector-nth 2))
-(define mass  (vector-nth 3))
-(define elas  (vector-nth 4))
-(define force (vector-nth 5))
-
-(define pos! (set-vector-nth! 1))
-(define vel! (set-vector-nth! 2))
-
-(define force! (set-vector-nth! 5))
-
-(define pos-x (uni pos x))
-(define pos-y (uni pos y))
-
-(define vel-x (uni vel x))
-(define vel-y (uni vel y))
-
-(define pos-x! (uni pos x!))
-(define pos-y! (uni pos y!))
-
-(define vel-x! (uni vel x!))
-(define vel-y! (uni vel y!))
-
-(define (apply-force node v)
-  (force! node (pt+ (force node) v)))
-
-(define (reset-force node)
-  (force! node (pt 0 0)))
-
-;; (define (node-id id)
-;;   (vector-ref *nodes* (- id 1)))
 
 (define (node-id id)
   (list-ref *nodes* (- id 1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (node pos vel mass elas)
+
+  (let ((acc   (pt 0.0 0.0))
+        
+        (force (pt 0.0 0.0))
+
+        (cur-pos #f)
+        (cur-vel #f)
+        (pos-k1  #f)
+        (vel-k1  #f)
+        (pos-k2  #f)
+        (vel-k2  #f)
+        (pos-k3  #f)
+        (vel-k3  #f)
+        (pos-k4  #f)
+        (vel-k4  #f))
+
+    (let ((apply-force
+           (lambda (v)
+             (set! force (pt+ force v))))
+
+          (reset-force
+           (lambda ()
+             (set! force (pt 0 0))))
+
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+          (new-acc (lambda () (pt/n force mass)))
+
+          (new-vel (lambda () (pt+ vel (pt*n acc *time-slice*))))
+          (new-pos (lambda () (pt+ pos (pt*n vel *time-slice*))))
+
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+          (k1-step
+           (lambda ()
+             (set! cur-pos pos)
+             (set! cur-vel vel)
+
+             (set! pos-k1 (pt*n vel *time-slice*))
+             (set! vel-k1 (pt*n acc *time-slice*))
+
+             (set! pos (pt+ cur-pos (pt/n pos-k1 2.0)))
+             (set! vel (pt+ cur-vel (pt/n vel-k1 2.0)))))
+
+          (k2-step
+           (lambda ()
+             (set! pos-k2 (pt*n vel *time-slice*))
+             (set! vel-k2 (pt*n acc *time-slice*))
+
+             (set! pos (pt+ cur-pos (pt/n pos-k2 2.0)))
+             (set! vel (pt+ cur-vel (pt/n vel-k2 2.0)))))
+
+          (k3-step
+           (lambda ()
+             (set! pos-k3 (pt*n vel *time-slice*))
+             (set! vel-k3 (pt*n acc *time-slice*))
+
+             (set! pos (pt+ cur-pos pos-k3))
+             (set! vel (pt+ cur-vel vel-k3))))
+
+          (k4-step
+           (lambda ()
+             (set! pos-k4 (pt*n vel *time-slice*))
+             (set! vel-k4 (pt*n acc *time-slice*))))
+
+          (find-next-position
+
+           (let ((handle-bounce
+
+                  (let ((below? (lambda () (< (y pos) 0)))
+
+                        (above? (lambda () (>= (y pos) *world-height*)))
+
+                        (beyond-left? (lambda () (< (x pos) 0)))
+
+                        (beyond-right? (lambda () (>= (x pos) *world-width*)))
+
+                        (bounce-top
+                         (lambda ()
+                           (y! pos (- *world-height* 1.0))
+                           (y! vel (- (* (y vel) elas)))))
+
+                        (bounce-bottom
+                         (lambda ()
+                           (y! pos 0.0)
+                           (y! vel (- (* (y vel) elas)))))
+
+                        (bounce-left
+                         (lambda ()
+                           (x! pos 0.0)
+                           (x! vel (- (* (x vel) elas)))))
+
+                        (bounce-right
+                         (lambda ()
+                           (x! pos (- *world-width* 1.0))
+                           (x! vel (- (* (x vel) elas))))))
+                  
+                    (lambda ()
+                      (cond ((above?)        (bounce-top))
+                            ((below?)        (bounce-bottom))
+                            ((beyond-left?)  (bounce-left))
+                            ((beyond-right?) (bounce-right))
+                            (else 'ok))))))
+               
+               (lambda ()
+
+                 (set! pos (pt+ cur-pos
+                                (pt/n (pt-sum-4 (pt/n pos-k1 2.0)
+                                                pos-k2
+                                                pos-k3
+                                                (pt/n pos-k4 2.0))
+                                      3.0)))
+
+                 (set! vel (pt+ cur-vel
+                                (pt/n (pt-sum-4 (pt/n vel-k1 2.0)
+                                                vel-k2
+                                                vel-k3
+                                                (pt/n vel-k4 2.0))
+                                      3.0)))
+
+                 (handle-bounce)))))
+
+      (let ((update-acceleration
+             (lambda ()
+               (set! acc (new-acc))
+               (reset-force))))
+
+      (vector 'node
+              (lambda () pos)
+              (lambda () vel)
+              apply-force
+              k1-step
+              k2-step
+              k3-step
+              k4-step
+              find-next-position
+              update-acceleration
+              (lambda (new) (set! vel new)))
+      ))))
+
+(define (pos node) ((vector-ref node 1)))
+(define (vel node) ((vector-ref node 2)))
+
+(define (apply-force node v) ((vector-ref node 3) v))
+
+(define (k1-step node) ((vector-ref node 4)))
+(define (k2-step node) ((vector-ref node 5)))
+(define (k3-step node) ((vector-ref node 6)))
+(define (k4-step node) ((vector-ref node 7)))
+
+(define (find-next-position node) ((vector-ref node 8)))
+
+(define (update-acceleration node) ((vector-ref node 9)))
+
+(define (vel! node new) ((vector-ref node 10) new))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (apply-gravity node)
+  (apply-force node (pt 0 -9.8)))
+
+(define (do-gravity)
+  (if *gravity*
+      (for-each apply-gravity *nodes*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; spring
@@ -92,8 +223,6 @@
 (define (stretch-length spr)
   (- (spring-length spr)
      (rest-length   spr)))
-
-;; (define stretch-length (bi spring-length rest-length -))
 
 (define (dir spr)
   (normalize (pt- (pos (node-b spr))
@@ -160,59 +289,6 @@
   (apply-force (node-a spr) (damping-force-a spr))
   (apply-force (node-b spr) (damping-force-b spr)))
 
-;; (define act-on-nodes-damping ;; spring --
-;;   (bi (bi node-a damping-force-a apply-force)
-;;       (bi node-b damping-force-b apply-force)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (below? node) (< (y (pos node)) 0))
-
-;; (define below? (uni pos (uni y (less-than? 0))))
-
-(define (above? node) (>= (y (pos node)) *world-height*))
-
-(define (beyond-left? node) (< (x (pos node)) 0))
-
-(define (beyond-right? node) (>= (x (pos node)) *world-width*))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (bounce-top node)
-  (y! (pos node) (- *world-height* 1.0))
-  (y! (vel node)
-      (- (* (y (vel node))
-            (elas node)))))
-
-(define (bounce-bottom node)
-  (y! (pos node) 0.0)
-  (y! (vel node)
-      (- (* (y (vel node))
-            (elas node)))))
-
-(define (bounce-left node)
-  (x! (pos node) 0.0)
-  (x! (vel node)
-      (- (* (x (vel node))
-            (elas node)))))
-
-(define (bounce-right node)
-  (x! (pos node) (- *world-width* 1.0))
-  (x! (vel node)
-      (- (* (x (vel node))
-            (elas node)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (handle-bounce node)
-
-  (cond ((above?        node) (bounce-top    node))
-        ((below?        node) (bounce-bottom node))
-        ((beyond-left?  node) (bounce-left   node))
-        ((beyond-right? node) (bounce-right  node))
-        
-        (else 'ok)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (act-on-nodes spr)
@@ -224,55 +300,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (apply-gravity node)
-  (apply-force node (pt 0 -9.8)))
+(define (update-nodes-acceleration)
+  (for-each update-acceleration *nodes*))
 
-(define (do-gravity)
-  (if *gravity*
-      (for-each apply-gravity *nodes*)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; F = ma
-
-(define (calc-acceleration node)
-  (pt/n (force node)
-        (mass node)))
-
-;; (define calc-acceleration (bi force mass v/n))
-
-(define (new-vel node)
-  (pt+ (vel node)
-       (pt*n (calc-acceleration node)
-             *time-slice*)))
-
-(define (new-pos node)
-  (pt+ (pos node)
-       (pt*n (vel node)
-             *time-slice*)))
-
-(define (iterate-node node)
-  (pos! node (new-pos node))
-  (vel! node (new-vel node))
-  (reset-force node)
-  (handle-bounce node))
-
-(define (iterate-nodes) (for-each iterate-node *nodes*))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (iterate-system)
+(define (accumulate-acceleration)
   (do-gravity)
   (loop-over-springs)
-  (iterate-nodes))
+  (update-nodes-acceleration))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (mass* id x y x-vel y-vel mass elas)
+(define (iterate-system-runge-kutta)
+
+  (accumulate-acceleration) (for-each k1-step *nodes*)
+  (accumulate-acceleration) (for-each k2-step *nodes*)
+  (accumulate-acceleration) (for-each k3-step *nodes*)
+  (accumulate-acceleration) (for-each k4-step *nodes*)
+
+  (for-each find-next-position *nodes*))
+
+(define iterate-system iterate-system-runge-kutta)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (mass id x y x-vel y-vel mass elas)
   (set! *nodes*
         (append *nodes*
                 (list
-                 (make-node (pt x y) (pt x-vel y-vel) mass elas (pt 0 0))))))
+                 (node (pt x y) (pt x-vel y-vel) mass elas)))))
 
 (define (spng id id-a id-b k damp rest-length)
   (set! *springs*
@@ -310,16 +365,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (draw-nodes) (for-each draw-node *nodes*))
-
+(define (draw-nodes)   (for-each draw-node   *nodes*))
 (define (draw-springs) (for-each draw-spring *springs*))
-
-;; (define (set-projection)
-;;   (glMatrixMode GL_PROJECTION)
-;;   (glLoadIdentity)
-;;   (glOrtho 0 (- *world-width* 1) 0 (- *world-height* 1) -1 1)
-;;   (glMatrixMode GL_MODELVIEW)
-;;   (glLoadIdentity))
 
 (define (display-system)
 
@@ -374,6 +421,21 @@
    (lambda ()
      (iterate-system)
      (glutPostRedisplay)))
+
+  (glutKeyboardFunc
+   (lambda (key x y)
+
+     (let ((key (if (char? key) key (integer->char key))))
+
+       (case key
+
+         ((#\2)
+          (set! *time-slice* (- *time-slice* 0.01))
+          (print "*time-slice* is now " *time-slice* "\n"))
+
+         ((#\3)
+          (set! *time-slice* (+ *time-slice* 0.01))
+          (print "*time-slice* is now " *time-slice* "\n"))))))
 
   (glutMainLoop))
 
