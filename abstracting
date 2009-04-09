@@ -44,14 +44,16 @@ done
 
 if   [ $scheme = ypsilon ]
 then
-  ypsilon -i -- src/boot/ypsilon/ypsilon.scm
+  # ypsilon -i -- src/boot/ypsilon/ypsilon.scm
+  ypsilon -i --sitelib=support/ypsilon -- src/boot/ypsilon/ypsilon.scm
 elif [ $scheme = larceny ]
 then
   cat src/boot/larceny/larceny.scm - | larceny -path support/larceny -err5rs
 elif [ $scheme = ikarus ]
 then
   # cat src/boot/ikarus/ikarus.scm - | ikarus
-  ikarus src/boot/ikarus/ikarus.scm
+  # ikarus src/boot/ikarus/ikarus.scm
+  IKARUS_LIBRARY_PATH=`pwd`/support/ikarus ikarus src/boot/ikarus/ikarus.scm
 elif [ $scheme = chicken ]
 then
   csi src/boot/chicken/chicken.scm
