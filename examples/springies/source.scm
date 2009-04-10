@@ -27,8 +27,11 @@
 
 (define *gravity* #t)
 
-(define *world-width*  #f)
-(define *world-height* #f)
+;; (define *world-width*  #f)
+;; (define *world-height* #f)
+
+(define *world-width*  500)
+(define *world-height* 500)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -406,15 +409,10 @@
      (glOrtho 0.0 (- *world-width* 1.0) 0.0 (- *world-height* 1.0) -1.0 1.0)))
 
   (glutDisplayFunc
-
    (lambda ()
-
      (glMatrixMode GL_MODELVIEW)
-
      (glLoadIdentity)
-
      (display-system)
-
      (glutSwapBuffers)))
 
   (glutIdleFunc
