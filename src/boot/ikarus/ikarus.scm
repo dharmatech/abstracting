@@ -95,4 +95,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (current-time-in-nanoseconds)
+  (let ((val (current-time)))
+    (+ (* (time-second val) 1000000000)
+       (time-nanosecond val))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (print "Abstracting is loaded\n")

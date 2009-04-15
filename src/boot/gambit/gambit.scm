@@ -179,6 +179,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (current-time-in-nanoseconds)
+  (exact (* (time->seconds (current-time))
+            1000000000)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-syntax case-lambda
   (syntax-rules ()
     ((case-lambda 
