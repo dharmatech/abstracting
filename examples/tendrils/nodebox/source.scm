@@ -27,6 +27,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (processing-map value low1 high1 low2 high2)
+  (+ low2
+     (* (/ (- value low1)
+           (- high1 low1))
+        (- high2 low2))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define *width*  #f)
 (define *height* #f)
 
@@ -67,6 +75,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define fill
+
+  (case-lambda
+
+   ((r g b a) (set! *fill-color* (rgba r g b a)))
+   ((r g b)   (set! *fill-color* (rgba r g b 1.0)))
+   ((g a)     (set! *fill-color* (rgba g g g a)))
+   ((g)       (set! *fill-color* (rgba g g g 1.0)))))
+
 (define stroke
 
   (case-lambda
@@ -94,18 +111,33 @@
                   (+ y (/ h 2.0))
                   0.0)
 
-    (glPushMatrix)
-    (glScaled w h 0.0)
-    (: *fill-color* 'apply glColor4d)
-    (gluDisk *oval-quadric* 0.0 0.5 20 20)
-    (glPopMatrix)
+    ;; (glPushMatrix)
+    ;; (glScaled w h 0.0)
+    ;; (: *fill-color* 'apply glColor4d)
+    ;; (gluDisk *oval-quadric* 0.0 0.5 20 20)
+    ;; (glPopMatrix)
+
+    ;; (glPushMatrix)
+    ;; (glScaled (- w (* *stroke-width* 2.0))
+    ;;           (- h (* *stroke-width* 2.0))
+    ;;           0.0)
+    ;; (: *stroke-color* 'apply glColor4d)
+    ;; (gluDisk *oval-quadric* 0.4 0.5 20 20)
+    ;; (gluDisk *oval-quadric* 0.4 0.5 20 20)
+    ;; (glPopMatrix)
 
     (glPushMatrix)
-    (glScaled (- w (* *stroke-width* 2.0))
-              (- h (* *stroke-width* 2.0))
-              0.0)
+    (glScaled w h 0.0)
+    
+    (: *fill-color* 'apply glColor4d)
+    (gluDisk *oval-quadric* 0.0 0.5 50 50)
+    
     (: *stroke-color* 'apply glColor4d)
-    (gluDisk *oval-quadric* 0.4 0.5 20 20)
+
+    (gluDisk *oval-quadric*
+             (- 0.5 (* *stroke-width* 0.5))
+             0.5 50 50)
+    
     (glPopMatrix)
 
     (glPopMatrix))
@@ -139,9 +171,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define *mouse-x* 0)
+(define *mouse-y* 0)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (init-nodebox)
 
   (glutInit (vector 0) (vector ""))
+
+  (glutInitDisplayMode GLUT_DOUBLE)
 
   (glutInitWindowSize *width* *height*)
 
@@ -153,6 +192,8 @@
      (set! *width*  w)
      (set! *height* h)
 
+     (glEnable GL_POINT_SMOOTH)
+     (glEnable GL_LINE_SMOOTH)
      (glEnable GL_POLYGON_SMOOTH)
 
      (glEnable GL_BLEND)
@@ -161,7 +202,12 @@
 
      (glMatrixMode GL_PROJECTION)
      (glLoadIdentity)
-     (glOrtho 0.0 (inexact w) 0.0 (inexact h) -10.0 10.0)))
+     (glOrtho 0.0 (inexact w) 0.0 (inexact h) -1000.0 1000.0)))
+
+  (glutPassiveMotionFunc
+   (lambda (x y)
+     (set! *mouse-x* x)
+     (set! *mouse-y* y)))
 
   (set! *oval-quadric* (gluNewQuadric))
 
@@ -173,13 +219,46 @@
 
 (define *draw* #f)
 
+(define *frames-per-second* #f)
+
+(define *last-display-time* 0)
+
+(define (nanoseconds-since-last-display)
+  (- (current-time-in-nanoseconds)
+     *last-display-time*))
+
+(define (nanoseconds-per-frame)
+  (/ 1000000000.0 *frames-per-second*))
+
 (define (run-nodebox)
 
   (glutDisplayFunc
    (lambda ()
      (glMatrixMode GL_MODELVIEW)
      (glLoadIdentity)
-     (*draw*)))
+     (*draw*)
+     (glutSwapBuffers)
+     ))
+
+  ;; (if *frames-per-second*
+  ;;     (glutIdleFunc
+  ;;      (lambda ()
+  ;;        (glutPostRedisplay))))
+
+  (if *frames-per-second*
+      
+      (glutIdleFunc
+       
+       (lambda ()
+
+         (if (> (nanoseconds-since-last-display)
+                (nanoseconds-per-frame))
+             (begin
+               ;; (print "generating frame\n")
+               (set! *last-display-time* (current-time-in-nanoseconds))
+               (glutPostRedisplay)))))
+
+      )
   
   (glutMainLoop))
 
