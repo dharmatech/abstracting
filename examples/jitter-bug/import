@@ -1,0 +1,10 @@
+(
+ "gl"
+ "glut"
+
+ "boids/pt-lib"
+ "boids/pt-lib/3d"
+
+ "tendrils/nodebox"
+ "tendrils/nodebox/3d"
+)
