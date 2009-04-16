@@ -135,6 +135,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (define (compile-lib dir)
+
+;;   (print "Compiling lib " dir)
+
+;;   (let ((dir (resolve dir)))
+
+;;     (let ((prologue
+
+;;            (let ((include-file (string-append dir "/include")))
+
+;;              (if (file-exists? include-file)
+
+;;                  (let ((include-list (call-with-input-file include-file read)))
+
+;;                    (apply string-append
+;;                           (map (lambda (lib)
+;;                                  (string-append "-prologue "
+;;                                                 (resolve lib)
+;;                                                 "/source.scm"
+;;                                                 ))
+;;                                include-list)))
+
+;;                  ""))))
+
+;;       (let ((source-file (string-append dir "/source.scm")))
+        
+;;         (system (string-append "csc " source-file
+;;                                " -R syntax-case "
+;;                                " -dynamic "
+;;                                prologue))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (compile-lib dir)
 
   (print "Compiling lib " dir)
@@ -163,6 +196,7 @@
         
         (system (string-append "csc " source-file
                                " -R syntax-case "
+                               " -R numbers "
                                " -dynamic "
                                prologue))))))
 
@@ -239,6 +273,10 @@
 (use srfi-4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (use numbers)
+
+;; (use srfi-19)
 
 (define (current-time-in-nanoseconds)
   (* (current-milliseconds) 1000000))
