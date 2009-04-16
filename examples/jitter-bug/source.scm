@@ -1,4 +1,10 @@
 
+;; Jitter Bug by Jeremy Sarchet
+;; 
+;; Original piece: http://www.openprocessing.org/visuals/?visualID=1238
+;;
+;; Ported to Abstracting by Ed Cavazos
+
 (size 500 500)
 
 (set! *frames-per-second* 30)
