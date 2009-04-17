@@ -3,4 +3,5 @@
 
 (define (s32vector-ffi hv) hv)
 (define (u32vector-ffi hv) hv)
+(define (f32vector-ffi hv) hv)
 (define (f64vector-ffi hv) hv)
