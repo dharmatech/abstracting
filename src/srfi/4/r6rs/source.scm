@@ -105,6 +105,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define-record-type (f32vector _make-f32vector f32vector?) (fields data))
+
+(define-multi (f32vector-length
+               f32vector-ref
+               f32vector-set!
+               f32vector-map!
+               make-f32vector
+               f32vector
+               f32vector->list
+               list->f32vector)
+  
+  (srfi-4-functor 4 _make-f32vector f32vector-data
+                  bytevector-ieee-single-native-ref
+                  bytevector-ieee-single-native-set!))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-record-type (f64vector _make-f64vector f64vector?) (fields data))
 
 (define-multi (f64vector-length
@@ -126,4 +143,5 @@
 
 (define (s32vector-ffi hv) (s32vector-data hv))
 (define (u32vector-ffi hv) (u32vector-data hv))
+(define (f32vector-ffi hv) (f32vector-data hv))
 (define (f64vector-ffi hv) (f64vector-data hv))
