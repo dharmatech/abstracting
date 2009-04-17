@@ -253,6 +253,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use numbers)
+
 (define inexact exact->inexact)
 (define exact   inexact->exact)
 
