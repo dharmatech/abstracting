@@ -1,4 +1,16 @@
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Nebula by Matt Schroeter
+;;
+;; Original version in Processing:
+;;   http://www.openprocessing.org/visuals/?visualID=1412
+;;
+;; Ported to Abstracting by Ed Cavazos
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (glutInit (vector 0) (vector ""))
 
 (glutInitDisplayMode GLUT_DOUBLE)
