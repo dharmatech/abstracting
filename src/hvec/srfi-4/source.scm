@@ -61,6 +61,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (f32-vec-obj hv)
+
+  (let ((len (lambda (     ) (f32vector-length hv      )))
+        (ref (lambda (i    ) (f32vector-ref    hv i    )))
+        (set (lambda (i val) (f32vector-set!   hv i val)))
+
+        (raw (lambda () hv))
+
+        (ffi (lambda () (f32vector-ffi hv))))
+
+    (let ((message-handler
+
+           (lambda (msg)
+
+             (case msg
+
+               ((len) len)
+               ((ref) ref)
+               ((set) set)
+               ((raw) raw)
+               ((ffi) ffi)))))
+
+      (vector 'f32-vec hv message-handler))))
+
+(define (f32-vec-of-len n) (f32-vec-obj (make-f32vector n 0.0)))
+
+(define (f32-vec . elts) (f32-vec-obj (apply f32vector elts)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (f64-vec-obj hv)
 
   (let ((len (lambda (     ) (f64vector-length hv      )))
