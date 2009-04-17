@@ -447,7 +447,14 @@ end
 
 (define glLightf (c-lambda ( GLenum GLenum GLfloat ) void "glLightf"))
 (define glLighti (c-lambda ( GLenum GLenum GLint ) void "glLighti"))
-(define glLightfv (c-lambda ( GLenum GLenum GLfloat* ) void "glLightfv"))
+
+;; (define glLightfv (c-lambda ( GLenum GLenum GLfloat* ) void "glLightfv"))
+
+(define glLightfv
+  (c-lambda (GLenum GLenum scheme-object) void
+
+    " glLightfv ( ___arg1 , ___arg2 , ___CAST ( ___F32* , ___BODY ( ___arg3 ) ) ) ; "))
+
 (define glLightiv (c-lambda ( GLenum GLenum GLint* ) void "glLightiv"))
 
 (define glGetLightfv (c-lambda ( GLenum GLenum GLfloat* ) void "glGetLightfv"))
@@ -455,12 +462,26 @@ end
 
 (define glLightModelf (c-lambda ( GLenum GLfloat ) void "glLightModelf"))
 (define glLightModeli (c-lambda ( GLenum GLint ) void "glLightModeli"))
-(define glLightModelfv (c-lambda ( GLenum GLfloat* ) void "glLightModelfv"))
+
+;; (define glLightModelfv (c-lambda ( GLenum GLfloat* ) void "glLightModelfv"))
+
+(define glLightModelfv
+  (c-lambda (GLenum scheme-object) void
+
+    " glLightModelfv ( ___arg1 , ___CAST ( ___F32* , ___BODY ( ___arg2 ) ) ) ; "))
+
 (define glLightModeliv (c-lambda ( GLenum GLint* ) void "glLightModeliv"))
 
 (define glMaterialf (c-lambda ( GLenum GLenum GLfloat ) void "glMaterialf"))
 (define glMateriali (c-lambda ( GLenum GLenum GLint ) void "glMateriali"))
-(define glMaterialfv (c-lambda ( GLenum GLenum GLfloat* ) void "glMaterialfv"))
+
+;; (define glMaterialfv (c-lambda ( GLenum GLenum GLfloat* ) void "glMaterialfv"))
+
+(define glMaterialfv
+  (c-lambda (GLenum GLenum scheme-object) void
+
+    " glMaterialfv ( ___arg1 , ___arg2 , ___CAST ( ___F32* , ___BODY ( ___arg3 ) ) ) ; "))
+
 (define glMaterialiv (c-lambda ( GLenum GLenum GLint* ) void "glMaterialiv"))
 
 (define glGetMaterialfv (c-lambda ( GLenum GLenum GLfloat* ) void "glGetMaterialfv"))
