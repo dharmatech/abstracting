@@ -74,7 +74,7 @@
    (glMatrixMode GL_PROJECTION)
    (glLoadIdentity)
 
-   (gluPerspective 90.0 (inexact (/ *width* *height*)) 0.0 4000.0)
+   (gluPerspective 90.0 (inexact (/ *width* *height*)) 0.1 4000.0)
 
    ))
 
