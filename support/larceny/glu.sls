@@ -1,4 +1,8 @@
 
+;; Original version for Gambit by David St-Hilaire
+;;
+;; Ported to Larceny by Ed Cavazos
+
 (library
 
  (glu)
@@ -245,7 +249,7 @@
 
    (let ((os (cdr (assq 'os-name (system-features)))))
 
-     (cond ;; ((string=? os "MacOS X")  (foreign-file "GLUT.framework/GLUT"))
+     (cond ((string=? os "MacOS X")  (foreign-file "GLUT.framework/GLUT"))
 	   ;; ((string=? os "Win32")    (foreign-file "glut32.dll"))
 	   ((string=? os "Linux")    (foreign-file "libGLU.so.1"))
 	   (else

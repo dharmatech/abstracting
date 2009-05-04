@@ -1,4 +1,8 @@
 
+;; Original version for Gambit by David St-Hilaire
+;;
+;; Ported to Ypsilon by Ed Cavazos
+
 (library
 
  (glu)
@@ -228,7 +232,7 @@
 
  (define libGLU (cond
 
-                 ;; (on-darwin  (load-shared-object "OpenGL.framework/OpenGL"))
+                 (on-darwin  (load-shared-object "OpenGL.framework/OpenGL"))
                  ;; (on-windows (load-shared-object "opengl32.dll"))
                  (on-linux   (load-shared-object "libGLU.so.1"))
                  (on-freebsd (load-shared-object "libGLU.so"))
