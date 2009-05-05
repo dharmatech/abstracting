@@ -27,6 +27,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (dist x1 y1 x2 y2)
+  (sqrt (+ (sq (- x2 x1))
+           (sq (- y2 y1)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (processing-map value low1 high1 low2 high2)
   (+ low2
      (* (/ (- value low1)
@@ -92,6 +98,22 @@
    ((r g b)   (set! *stroke-color* (rgba r g b 1.0)))
    ((g a)     (set! *stroke-color* (rgba g g g a)))
    ((g)       (set! *stroke-color* (rgba g g g 1.0)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define line
+
+  (case-lambda
+
+   ((x1 y1 x2 y2)
+    (: *stroke-color* 'apply glColor4d)
+    (glBegin GL_LINES)
+    (glVertex2d x1 y1)
+    (glVertex2d x2 y2)
+    (glEnd))
+
+   ((a b)
+    (line (x a) (y a) (x b) (y b)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -171,10 +193,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define *p-mouse-x* 0)
+(define *p-mouse-y* 0)
+
 (define *mouse-x* 0)
 (define *mouse-y* 0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define *title* #f)
+
+(define *y-increases-up* #t)
 
 (define (init-nodebox)
 
@@ -184,7 +213,9 @@
 
   (glutInitWindowSize *width* *height*)
 
-  (glutCreateWindow "Abstracting")
+  ;; (glutCreateWindow "Abstracting")
+
+  (glutCreateWindow (if *title* *title* "Abstracting"))
 
   (glutReshapeFunc
    (lambda (w h)
@@ -200,12 +231,22 @@
      (glBlendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA)
      (glViewport 0 0 w h)
 
-     (glMatrixMode GL_PROJECTION)
-     (glLoadIdentity)
-     (glOrtho 0.0 (inexact w) 0.0 (inexact h) -1000.0 1000.0)))
+     (if *y-increases-up*
+         (begin
+           (glMatrixMode GL_PROJECTION)
+           (glLoadIdentity)
+           (glOrtho 0.0 (inexact w) 0.0 (inexact h) -1000.0 1000.0))
+         (begin
+           (glMatrixMode GL_PROJECTION)
+           (glLoadIdentity)
+           (glOrtho 0.0 (inexact w) (inexact h) 0.0 -1000.0 1000.0)))))
 
   (glutPassiveMotionFunc
    (lambda (x y)
+
+     (set! *p-mouse-x* *mouse-x*)
+     (set! *p-mouse-y* *mouse-y*)
+     
      (set! *mouse-x* x)
      (set! *mouse-y* y)))
 
@@ -245,20 +286,18 @@
   ;;      (lambda ()
   ;;        (glutPostRedisplay))))
 
-  (if *frames-per-second*
-      
-      (glutIdleFunc
-       
-       (lambda ()
-
-         (if (> (nanoseconds-since-last-display)
-                (nanoseconds-per-frame))
-             (begin
-               ;; (print "generating frame\n")
-               (set! *last-display-time* (current-time-in-nanoseconds))
-               (glutPostRedisplay)))))
-
-      )
+  (cond ((eq? *frames-per-second* #t)
+         (glutIdleFunc
+          (lambda ()
+            (glutPostRedisplay))))
+        ((number? *frames-per-second*)
+         (glutIdleFunc
+          (lambda ()
+            (if (> (nanoseconds-since-last-display)
+                   (nanoseconds-per-frame))
+                (begin
+                  (set! *last-display-time* (current-time-in-nanoseconds))
+                  (glutPostRedisplay)))))))
   
   (glutMainLoop))
 
