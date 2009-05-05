@@ -79,17 +79,17 @@
 
 (import (srfi :19))
 
-;; (define (current-time-in-nanoseconds)
-;;   (let ((val (current-time)))
-;;     (+ (* (time-second val) 1000000000)
-;;        (time-nanosecond val))))
-
-;; Temporary workaround:
-
 (define (current-time-in-nanoseconds)
   (let ((val (current-time)))
     (+ (* (time-second val) 1000000000)
-       (* (time-nanosecond val) 100))))
+       (time-nanosecond val))))
+
+;; Temporary workaround:
+
+;; (define (current-time-in-nanoseconds)
+;;   (let ((val (current-time)))
+;;     (+ (* (time-second val) 1000000000)
+;;        (* (time-nanosecond val) 100))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
