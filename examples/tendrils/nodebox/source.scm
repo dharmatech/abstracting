@@ -271,6 +271,16 @@
 (define (nanoseconds-per-frame)
   (/ 1000000000.0 *frames-per-second*))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define *mouse-pressed* #f)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define (run-nodebox)
 
   (glutDisplayFunc
@@ -280,6 +290,9 @@
      (*draw*)
      (glutSwapBuffers)
      ))
+
+  
+     
 
   ;; (if *frames-per-second*
   ;;     (glutIdleFunc
@@ -302,3 +315,27 @@
   (glutMainLoop))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (initialize-glut)
+  (glutInit (vector 0) (vector "")))
+
+(define (frames-per-second n)
+
+  (let ((last-display-time 0))
+
+    (let ((nanoseconds-per-frame
+           (lambda ()
+             (/ 1000000000.0 n)))
+
+          (nanoseconds-since-last-display
+           (lambda ()
+             (- (current-time-in-nanoseconds)
+                last-display-time))))
+
+      (glutIdleFunc
+       (lambda ()
+         (if (> (nanoseconds-since-last-display)
+                (nanoseconds-per-frame))
+             (begin
+               (set! last-display-time (current-time-in-nanoseconds))
+               (glutPostRedisplay))))))))
