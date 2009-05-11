@@ -339,3 +339,16 @@
              (begin
                (set! last-display-time (current-time-in-nanoseconds))
                (glutPostRedisplay))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (buffered-display-procedure procedure)
+  (glutDisplayFunc
+   (lambda ()
+     
+     (glMatrixMode GL_MODELVIEW)
+     (glLoadIdentity)
+
+     (procedure)
+
+     (glutSwapBuffers))))
