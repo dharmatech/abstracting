@@ -82,4 +82,8 @@
    (update-points)
    (glEnd) ))
 
+(print "\n"
+       "Left  mouse button to pull\n"
+       "Right mouse button to push\n")
+
 (glutMainLoop)
