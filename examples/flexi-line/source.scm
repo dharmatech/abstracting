@@ -34,12 +34,8 @@
                  ;; accelerate
 
                  (if (= mouse-state GLUT_DOWN)
-                     (let ((k (* pow
-                                 pow
-                                 (if (= mouse-button
-                                        GLUT_LEFT_BUTTON)
-                                     1
-                                     -1)))
+                     (let ((k (* pow pow (if (= mouse-button GLUT_LEFT_BUTTON)
+                                             1 -1)))
                            
                            (ang (atan (- mouse-y y)
                                       (- mouse-x x))))
