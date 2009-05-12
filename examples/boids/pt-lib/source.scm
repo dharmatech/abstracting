@@ -10,6 +10,12 @@
 
 (define (pt a b) (vector 'pt a b))
 
+(define pt-x (vector-nth 1))
+(define pt-y (vector-nth 2))
+
+(define pt-x! (set-vector-nth! 1))
+(define pt-y! (set-vector-nth! 2))
+
 (define x (vector-nth 1))
 (define y (vector-nth 2))
 
